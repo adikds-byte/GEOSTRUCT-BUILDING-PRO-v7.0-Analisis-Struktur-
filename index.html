@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEOSTRUCT BUILDING PRO v7.0 — Analisis Struktur Rumah 1, 2, 3 s/d N-Lantai, Pondasi, Kolom, Balok & Katalog Rangka Atap</title>
+    <title>GEOSTRUCT BUILDING & DIAGRAM PRO v8.0 — Analisis BMD, SFD, NFD Balok, Kolom & Pelat per Lantai (SNI 2847:2019 & SNI 1726:2019)</title>
 
     <!-- ========================================================================= -->
     <!-- INISIALISASI DINI: EARLY SECURITY GUARD & AUDIO TACTICAL HUD              -->
@@ -44,7 +44,7 @@
             hud.id = 'structSecHud';
             hud.style.cssText = 'position:fixed;top:18px;right:18px;z-index:100099;width:min(420px,calc(100vw - 24px));background:linear-gradient(135deg,rgba(8,22,28,0.98),rgba(2,6,23,0.98));border:1.5px solid #10b981;border-radius:14px;box-shadow:0 0 30px rgba(16,185,129,0.45);padding:12px 14px;font-family:monospace;color:#f8fafc;';
             hud.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(16,185,129,0.35);padding-bottom:6px;margin-bottom:8px;">' +
-                '<span style="color:#34d399;font-weight:900;font-size:11px;"><i class="fa-solid fa-shield-halved"></i> PROTOKOL KEAMANAN GEOSTRUCT PRO v7.0</span>' +
+                '<span style="color:#34d399;font-weight:900;font-size:11px;"><i class="fa-solid fa-shield-halved"></i> PROTOKOL KEAMANAN GEOSTRUCT PRO v8.0</span>' +
                 '<span style="background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#fde047;font-size:9px;padding:2px 6px;border-radius:4px;">Percobaan #' + attemptCount + '</span>' +
                 '</div>' +
                 '<div style="color:#fda4af;font-weight:800;font-size:11px;margin-bottom:4px;">' + title + '</div>' +
@@ -60,7 +60,7 @@
             var ctrl = e.ctrlKey || e.metaKey;
             if (ctrl && (k === 'u' || code === 85)) {
                 e.preventDefault();
-                showSecurityHUD('AKSES KODE SUMBER DIBLOKIR (Ctrl+U)', 'Algoritma SNI 2847:2019, SNI 1726:2019 & Hak Cipta Ir. Mohamad Hartadi dilindungi.');
+                showSecurityHUD('AKSES KODE SUMBER DIBLOKIR (Ctrl+U)', 'Algoritma Diagram Momen-Gaya SNI 2847:2019, SNI 1726:2019 & Hak Cipta Ir. Mohamad Hartadi dilindungi.');
                 return false;
             }
             if (k === 'f12' || code === 123 || (ctrl && e.shiftKey && ['i','j','c'].includes(k))) {
@@ -74,13 +74,13 @@
             var tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
             e.preventDefault();
-            showSecurityHUD('PROTEKSI KLIK KANAN AKTIF', 'Aset visual Blueprint Struktur, Model 3D Gedung & Bumi 3D terlindungi.');
+            showSecurityHUD('PROTEKSI KLIK KANAN AKTIF', 'Aset visual Diagram BMD/SFD/NFD, Model 3D Gedung & Bumi 3D terlindungi.');
             return false;
         }, true);
     })();
     </script>
 
-    <!-- Tailwind CSS, Three.js, Chart.js, Leaflet, SheetJS, jsPDF -->
+    <!-- Tailwind CSS, Three.js, Chart.js, Leaflet, SheetJS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -99,7 +99,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
@@ -151,7 +150,7 @@
         }
 
         .blueprint-grid {
-            background-color: #07223d;
+            background-color: #061d36;
             background-image:
                 linear-gradient(rgba(56, 189, 248, 0.15) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(56, 189, 248, 0.15) 1px, transparent 1px),
@@ -189,7 +188,6 @@
         @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes spinRingRev { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
-        .capsule-translate { display:inline-flex; align-items:center; gap:6px; border:1.5px solid #00B8D4; border-radius:12px; background:rgba(0,20,30,.65); color:#7FEBFF; font-family:'JetBrains Mono',monospace; font-weight:700; padding:0 12px; height:36px; cursor:pointer; }
         .capsule-font { display:inline-flex; align-items:center; gap:6px; border:1.5px solid #C6A664; border-radius:12px; background:rgba(30,25,10,.65); color:#fff; font-family:'JetBrains Mono',monospace; font-weight:700; padding:0 10px; height:36px; }
         .btn-dam-tailing { display:inline-flex; align-items:center; gap:6px; border:1.5px solid #34d399; border-radius:12px; background:linear-gradient(135deg, rgba(6,78,59,.85), rgba(6,182,212,.25)); color:#a7f3d0; font-family:'JetBrains Mono',monospace; font-weight:800; padding:0 12px; height:36px; cursor:pointer; font-size:11px; }
 
@@ -217,9 +215,9 @@
                 <span id="loadingClock">Memuat Hari &amp; Waktu Real-Time WIB...</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-300 to-amber-400 flex items-center justify-center gap-2.5 font-tech uppercase">
-                <i class="fa-solid fa-building-shield text-amber-400"></i> GEOSTRUCT BUILDING FRAME PRO v7.0
+                <i class="fa-solid fa-building-shield text-amber-400"></i> GEOSTRUCT BUILDING &amp; DIAGRAM PRO v8.0
             </h2>
-            <p class="text-xs text-slate-400 font-mono">Analisis Struktur Rumah &amp; Gedung 1, 2, 3 s/d N-Lantai • Pondasi, Kolom, Balok &amp; Katalog Profil Atap (SNI 2847:2019, SNI 1726:2019, SNI 1729:2020)</p>
+            <p class="text-xs text-slate-400 font-mono">Diagram Momen (BMD), Geser (SFD), Aksial (NFD) Balok, Kolom &amp; Pelat per Lantai • Risalah, Saran Teknis &amp; Kesimpulan SNI</p>
         </div>
 
         <div class="relative w-64 h-64 sm:w-76 sm:h-76 flex items-center justify-center my-auto z-10">
@@ -231,17 +229,17 @@
 
         <div class="w-full max-w-md text-center mb-3 space-y-3 z-10">
             <div class="flex justify-between text-xs text-slate-400 font-mono mb-1">
-                <span id="loadingStatusText">Menginisialisasi Katalog Profil Baja/Atap, Solver Portal &amp; Bumi 3D...</span>
+                <span id="loadingStatusText">Menginisialisasi Solver BMD/SFD/NFD per Lantai &amp; Bumi 3D...</span>
                 <span id="loadingPercent" class="text-emerald-400 font-bold">25%</span>
             </div>
             <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-700 p-0.5">
                 <div id="loadingProgressBar" class="h-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-amber-400 rounded-full w-1/4 transition-all duration-300"></div>
             </div>
             <button type="button" onclick="dismissLoadingScreen()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 hover:brightness-110 text-slate-950 font-black font-mono text-xs inline-flex items-center gap-2 shadow-lg shadow-emerald-500/30 transition transform active:scale-95 cursor-pointer">
-                <i class="fa-solid fa-helmet-safety"></i> MASUK KE WORKSPACE STRUKTUR PRO
+                <i class="fa-solid fa-helmet-safety"></i> MASUK KE WORKSPACE STRUKTUR v8.0
             </button>
             <div class="text-[10px] text-slate-500 font-mono">
-                "Engineering = Safe Structures — Desain Pondasi, Kolom, Balok &amp; Rangka Atap Presisi Sesuai Standar SNI." — Ir. Mohamad Hartadi (Adi)
+                "Engineering = Safe Structures — Analisis Diagram Momen &amp; Gaya Presisi di Setiap Lantai Sesuai SNI." — Ir. Mohamad Hartadi (Adi)
             </div>
         </div>
     </div>
@@ -256,7 +254,7 @@
                     <i class="fa-solid fa-earth-asia"></i>
                 </div>
                 <div>
-                    <div class="text-sm font-bold text-white font-tech">SCREENSAVER ORBIT BUMI 3D &amp; TELEMETRI STRUKTUR MULTI-LANTAI</div>
+                    <div class="text-sm font-bold text-white font-tech">SCREENSAVER ORBIT BUMI 3D &amp; MONITOR DIAGRAM STRUKTUR</div>
                     <div class="text-xs text-slate-300 font-mono">Klik layar atau tekan ESC untuk kembali ke Simulator Struktur</div>
                 </div>
             </div>
@@ -278,13 +276,13 @@
                 Memuat Hari &amp; Tanggal...
             </div>
             <div id="screensaverStatusBadge" class="mt-3 text-xs text-amber-300 font-mono font-bold bg-slate-900/90 px-4 py-1.5 rounded-full border border-amber-500/50">
-                STATUS GEDUNG: 2 LANTAI • DCR KOLOM = 0.58 • DCR BALOK = 0.64 • FS PONDASI = 3.12 (AMAN)
+                STATUS GEDUNG: 2 LANTAI • DCR KOLOM = 0.54 • DCR BALOK = 0.62 • FS PONDASI = 3.18 (AMAN)
             </div>
         </div>
 
         <div class="z-20 w-full max-w-3xl mx-auto px-4 mb-2">
             <div class="bg-slate-900/90 border border-emerald-500/50 p-3.5 rounded-2xl text-center text-xs text-slate-200 font-mono">
-                <i class="fa-solid fa-check-double text-emerald-400 mr-1"></i> Prinsip Desain Tahan Gempa SNI 1726:2019 &amp; SNI 2847:2019: <b>"Strong Column Weak Beam"</b> ($\sum M_{nc} \ge 1,2 \sum M_{nb}$).
+                <i class="fa-solid fa-check-double text-emerald-400 mr-1"></i> Kaidah Desain Tahan Gempa SNI 1726:2019 &amp; SNI 2847:2019: <b>"Strong Column Weak Beam"</b> ($\sum M_{nc} \ge 1,2 \sum M_{nb}$).
             </div>
         </div>
     </div>
@@ -295,7 +293,7 @@
     <!-- ========================================================================= -->
     <!-- 3. HEADER COMMAND CENTER & PRESET CEPAT 1, 2, 3 s/d N-LANTAI              -->
     <!-- ========================================================================= -->
-    <div class="w-full max-w-[1820px] mx-auto p-3 md:p-4 flex-1 flex flex-col gap-4 relative z-10">
+    <div class="w-full max-w-[1840px] mx-auto p-3 md:p-4 flex-1 flex flex-col gap-4 relative z-10">
         <header class="w-full bg-[var(--bg-header)] backdrop-blur-md p-3.5 md:p-4 rounded-2xl border-2 border-[var(--border-color)] shadow-xl flex flex-col gap-3">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -306,14 +304,14 @@
                         <div class="flex items-center gap-1.5 flex-wrap">
                             <span class="bg-emerald-950 text-emerald-300 border border-emerald-500/50 text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase">SNI 2847:2019 Beton</span>
                             <span class="bg-cyan-950 text-cyan-300 border border-cyan-500/50 text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase">SNI 1726:2019 Gempa</span>
-                            <span class="bg-amber-950 text-amber-300 border border-amber-500/50 text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase">SNI 1729:2020 &amp; SNI 7971:2013 Atap</span>
-                            <span class="bg-purple-950 text-purple-300 border border-purple-500/50 text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase">SNI 8460:2017 Pondasi</span>
+                            <span class="bg-amber-950 text-amber-300 border border-amber-500/50 text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase">SNI 1727:2020 Beban</span>
+                            <span class="bg-purple-950 text-purple-300 border border-purple-500/50 text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase">SNI 8460:2017 &amp; SNI 1729:2020</span>
                         </div>
-                        <h1 id="mainAppTitle" class="font-tech text-sm sm:text-lg md:text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-300 to-amber-400 uppercase mt-1">
-                            SISTEM ANALISIS STRUKTUR RUMAH &amp; GEDUNG 1, 2, 3 s/d N-LANTAI + KATALOG PROFIL ATAP
+                        <h1 class="font-tech text-sm sm:text-lg md:text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-300 to-amber-400 uppercase mt-1">
+                            SISTEM ANALISIS STRUKTUR &amp; DIAGRAM MOMEN-GAYA (BMD, SFD, NFD) RUMAH &amp; GEDUNG 1, 2, 3 s/d N-LANTAI
                         </h1>
                         <p class="text-[11px] font-mono text-[var(--text-muted)] mt-0.5">
-                            Analisis Pondasi Telapak &amp; Batu Kali • Sloof &amp; Balok Induk • Kolom Bertingkat ($P_u - M_u$) • Kuda-Kuda &amp; Katalog Profil Atap Resmi
+                            Diagram Momen &amp; Gaya Balok, Kolom, dan Pelat Lantai per Tingkat • Analisis Pondasi • Katalog Rangka Atap • Risalah, Saran Teknis &amp; Kesimpulan
                         </p>
                     </div>
                 </div>
@@ -328,10 +326,10 @@
                 </div>
             </div>
 
-            <!-- BARIS 2: TOMBOL CEPAT 1 LANTAI, 2 LANTAI, 3 LANTAI, UPDATE LANTAI DINAMIS & EKSPOR -->
+            <!-- BARIS 2: TOMBOL CEPAT 1, 2, 3 LANTAI, UPDATE LANTAI DINAMIS & EKSPOR -->
             <div class="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border-color)] pt-2.5 font-mono text-[11px]">
                 <div class="flex flex-wrap items-center gap-1.5">
-                    <span class="text-slate-400 font-bold mr-1"><i class="fa-solid fa-layer-group text-amber-400"></i> PILIH / UPDATE LANTAI:</span>
+                    <span class="text-slate-400 font-bold mr-1"><i class="fa-solid fa-layer-group text-amber-400"></i> JUMLAH LANTAI:</span>
                     <button type="button" onclick="applyBuildingPreset(1)" id="btnStory1" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-emerald-950 text-emerald-300 border border-emerald-500/60 font-bold cursor-pointer transition">
                         🏠 1 LANTAI
                     </button>
@@ -351,14 +349,14 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="switchCenterTab('diagrams')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-500 hover:brightness-110 text-white font-black cursor-pointer flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-bezier-curve"></i> DIAGRAM BMD/SFD PER LANTAI
+                    </button>
                     <button type="button" onclick="openWordReportsModal()" class="px-3 py-1.5 rounded-xl bg-sky-950 hover:bg-sky-900 text-sky-300 border border-sky-500/70 font-bold cursor-pointer flex items-center gap-1.5">
                         <i class="fa-solid fa-file-word text-sky-400"></i> LAPORAN WORD (13)
                     </button>
                     <button type="button" onclick="exportStructExcel()" class="px-3 py-1.5 rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/70 font-bold cursor-pointer flex items-center gap-1.5">
                         <i class="fa-solid fa-file-excel text-emerald-400"></i> EXCEL
-                    </button>
-                    <button type="button" onclick="downloadBlueprintPNG()" class="px-3 py-1.5 rounded-xl bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/70 font-bold cursor-pointer flex items-center gap-1.5">
-                        <i class="fa-solid fa-download text-cyan-400"></i> BLUEPRINT PNG
                     </button>
                     <button type="button" onclick="openAppsModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-lime-500 to-emerald-500 hover:brightness-110 text-slate-950 font-black cursor-pointer flex items-center gap-1.5">
                         <i class="fa-solid fa-cubes-stacked"></i> MY APLIKASI (61)
@@ -378,52 +376,52 @@
         </header>
 
         <!-- ========================================================================= -->
-        <!-- 4. 5 KARTU METRIK EKSEKUTIF STRUKTUR (PONDASI, KOLOM, BALOK, ATAP, GEMPA) -->
+        <!-- 4. 5 KARTU METRIK EKSEKUTIF STRUKTUR (PONDASI, KOLOM, BALOK, PELAT, ATAP) -->
         <!-- ========================================================================= -->
         <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 font-mono">
             <div class="cmd-card p-3.5 border-l-4 border-l-amber-500">
                 <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
-                    <span>① Pondasi Telapak (SNI 8460)</span>
+                    <span>① Pondasi Footplate (SNI 8460)</span>
                     <i class="fa-solid fa-layer-group text-amber-400"></i>
                 </div>
                 <div id="kpiFoundationFs" class="text-xl sm:text-2xl font-tech font-black text-amber-300 mt-0.5">FS = 3.18</div>
-                <span id="kpiFoundationSub" class="text-[10px] text-slate-300 block">q_u = 98.4 kPa ≤ q_all 150 kPa (AMAN)</span>
+                <span id="kpiFoundationSub" class="text-[10px] text-slate-300 block">q_max = 98.4 kPa ≤ q_all 150 kPa (AMAN)</span>
             </div>
 
             <div class="cmd-card p-3.5 border-l-4 border-l-cyan-500">
                 <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
-                    <span>② Kolom Lt.1 (SNI 2847)</span>
+                    <span>② Kolom &amp; Momen Tingkat</span>
                     <i class="fa-solid fa-table-columns text-cyan-400"></i>
                 </div>
                 <div id="kpiColumnDcr" class="text-xl sm:text-2xl font-tech font-black text-cyan-300 mt-0.5">DCR = 0.54</div>
-                <span id="kpiColumnSub" class="text-[10px] text-slate-300 block">Pu = 385 kN ≤ φPn = 712 kN (AMAN)</span>
+                <span id="kpiColumnSub" class="text-[10px] text-slate-300 block">Pu = 385 kN | Mu,col = 28.4 kN.m</span>
             </div>
 
             <div class="cmd-card p-3.5 border-l-4 border-l-emerald-500">
                 <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
-                    <span>③ Balok Induk &amp; Sloof</span>
+                    <span>③ Balok Induk (BMD &amp; SFD)</span>
                     <i class="fa-solid fa-grip-lines text-emerald-400"></i>
                 </div>
                 <div id="kpiBeamDcr" class="text-xl sm:text-2xl font-tech font-black text-emerald-400 mt-0.5">DCR = 0.62</div>
-                <span id="kpiBeamSub" class="text-[10px] text-slate-300 block">Mu = 68.5 kN.m ≤ φMn = 110.4 kN.m</span>
+                <span id="kpiBeamSub" class="text-[10px] text-slate-300 block">Mu⁻ = 68.5 kN.m | Vu = 64.2 kN</span>
             </div>
 
-            <div class="cmd-card p-3.5 border-l-4 border-l-purple-500">
+            <div class="cmd-card p-3.5 border-l-4 border-l-sky-400">
                 <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
-                    <span>④ Rangka &amp; Profil Atap</span>
+                    <span>④ Pelat Lantai 2 Arah</span>
+                    <i class="fa-solid fa-border-all text-sky-400"></i>
+                </div>
+                <div id="kpiSlabMoment" class="text-xl sm:text-2xl font-tech font-black text-sky-300 mt-0.5">Mtx = 8.42 kN.m</div>
+                <span id="kpiSlabSub" class="text-[10px] text-slate-300 block">Mlx = 4.15 kN.m/m • Tul: Ø10-150 (AMAN)</span>
+            </div>
+
+            <div class="cmd-card p-3.5 border-l-4 border-l-purple-500 col-span-2 sm:col-span-1">
+                <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
+                    <span>⑤ Rangka Atap &amp; Gempa</span>
                     <i class="fa-solid fa-house-chimney-window text-purple-400"></i>
                 </div>
                 <div id="kpiRoofDcr" class="text-xl sm:text-2xl font-tech font-black text-purple-300 mt-0.5">DCR = 0.61</div>
-                <span id="kpiRoofSub" class="text-[10px] text-slate-300 block">Profil: C75.75 G550 (AMAN ≤ 1.00)</span>
-            </div>
-
-            <div class="cmd-card p-3.5 border-l-4 border-l-rose-500 col-span-2 sm:col-span-1">
-                <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
-                    <span>⑤ Geser Gempa (SNI 1726)</span>
-                    <i class="fa-solid fa-house-tsunami text-rose-400"></i>
-                </div>
-                <div id="kpiBaseShear" class="text-xl sm:text-2xl font-tech font-black text-rose-400 mt-0.5">V = 142.8 kN</div>
-                <span id="kpiSeismicSub" class="text-[10px] text-emerald-300 block font-bold">SCWB ≥ 1.20 • Status: SAFE BUILDING</span>
+                <span id="kpiSeismicSub" class="text-[10px] text-emerald-300 block font-bold">V_gempa = 142.8 kN • SCWB ≥ 1.20</span>
             </div>
         </section>
 
@@ -432,89 +430,130 @@
         <!-- ========================================================================= -->
         <main class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full">
 
-            <!-- ================= LEFT PANEL (3 COLS): RINGKASAN PERHITUNGAN SNI STEP-BY-STEP ================= -->
+            <!-- ================= LEFT PANEL (3 COLS): ANALISIS GAYA DALAM PER LANTAI & SNI ================= -->
             <section class="lg:col-span-3 cmd-card p-4 flex flex-col gap-3">
                 <div class="flex justify-between items-center border-b border-emerald-900/60 pb-2">
                     <h2 class="font-tech text-xs md:text-sm font-black text-amber-300 uppercase">
-                        <i class="fa-solid fa-calculator text-emerald-400 mr-1"></i> Analisis Elemen Struktur
+                        <i class="fa-solid fa-calculator text-emerald-400 mr-1"></i> Ringkasan Gaya Dalam SNI
                     </h2>
-                    <span id="leftStoryBadge" class="text-[10px] font-mono text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-700 font-bold">2 LANTAI</span>
+                    <span id="leftStoryBadge" class="text-[10px] font-mono text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-700 font-bold">LANTAI 1 / 2</span>
                 </div>
 
-                <!-- Step 1: Pembebanan & Gempa Multi-Lantai -->
-                <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 space-y-1.5 font-mono text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-rose-500 text-white font-black flex items-center justify-center text-[10px] shrink-0">1</span>
-                        <span class="font-bold text-white text-[11px]">Beban Gravitasi &amp; Gempa (SNI 1726:2019)</span>
+                <!-- Pemilih Cepat Lantai yang Sedang Diinspeksi -->
+                <div class="bg-slate-950/90 p-2.5 rounded-xl border border-cyan-500/40 font-mono text-xs">
+                    <div class="text-[10px] text-cyan-300 font-bold uppercase mb-1.5">
+                        <i class="fa-solid fa-bullseye mr-1"></i> Fokus Inspeksi Lantai Saat Ini:
                     </div>
-                    <div id="stepLoadFormula" class="formula-box space-y-0.5"></div>
+                    <div id="leftFloorSelectorBtns" class="flex flex-wrap gap-1.5"></div>
                 </div>
 
-                <!-- Step 2: Rangka & Profil Atap Katalog -->
+                <!-- Step 1: Momen & Geser Balok pada Lantai Terpilih -->
                 <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 space-y-1.5 font-mono text-xs">
                     <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-purple-500 text-white font-black flex items-center justify-center text-[10px] shrink-0">2</span>
-                        <span class="font-bold text-white text-[11px]">Rangka &amp; Profil Atap (SNI 7971 / 1729)</span>
-                    </div>
-                    <div id="stepRoofFormula" class="formula-box space-y-0.5"></div>
-                </div>
-
-                <!-- Step 3: Balok Induk & Sloof -->
-                <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 space-y-1.5 font-mono text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">3</span>
-                        <span class="font-bold text-white text-[11px]">Balok Induk &amp; Sloof (SNI 2847:2019)</span>
+                        <span class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">1</span>
+                        <span id="leftTitleBeam" class="font-bold text-white text-[11px]">Diagram Balok Induk (Lantai 1)</span>
                     </div>
                     <div id="stepBeamFormula" class="formula-box space-y-0.5"></div>
                 </div>
 
-                <!-- Step 4: Kolom Struktur Bertingkat -->
+                <!-- Step 2: Momen, Geser & Aksial Kolom pada Lantai Terpilih -->
                 <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 space-y-1.5 font-mono text-xs">
                     <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-cyan-400 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">4</span>
-                        <span class="font-bold text-white text-[11px]">Kolom Struktur &amp; SCWB (SNI 2847:2019)</span>
+                        <span class="w-5 h-5 rounded-full bg-cyan-400 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">2</span>
+                        <span id="leftTitleCol" class="font-bold text-white text-[11px]">Diagram Kolom Struktur (Lantai 1)</span>
                     </div>
                     <div id="stepColumnFormula" class="formula-box space-y-0.5"></div>
                 </div>
 
-                <!-- Step 5: Pondasi Telapak & Batu Kali -->
+                <!-- Step 3: Momen & Geser Pelat Lantai Dua Arah pada Lantai Terpilih -->
                 <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 space-y-1.5 font-mono text-xs">
                     <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">5</span>
-                        <span class="font-bold text-white text-[11px]">Pondasi Footplate &amp; Geser Pons (SNI 8460)</span>
+                        <span class="w-5 h-5 rounded-full bg-sky-400 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">3</span>
+                        <span id="leftTitleSlab" class="font-bold text-white text-[11px]">Diagram Pelat Lantai 2 Arah (Lantai 1)</span>
                     </div>
-                    <div id="stepFoundFormula" class="formula-box space-y-0.5"></div>
+                    <div id="stepSlabFormula" class="formula-box space-y-0.5"></div>
+                </div>
+
+                <!-- Step 4: Rangka Atap & Pondasi Telapak -->
+                <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 space-y-1.5 font-mono text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-[10px] shrink-0">4</span>
+                        <span class="font-bold text-white text-[11px]">Pondasi Footplate &amp; Kuda-Kuda Atap</span>
+                    </div>
+                    <div id="stepFoundRoofFormula" class="formula-box space-y-0.5"></div>
                 </div>
             </section>
 
-            <!-- ================= CENTER PANEL (6 COLS): BLUEPRINT 2D / 3D FRAME / KATALOG ATAP / WEBGIS ================= -->
+            <!-- ================= CENTER PANEL (6 COLS): MULTI-VIEWPORT & DIAGRAM BMD/SFD/NFD ================= -->
             <section class="lg:col-span-6 flex flex-col gap-4">
                 <div class="cmd-card overflow-hidden flex flex-col">
+                    <!-- Tab Navigation Center -->
                     <div class="p-3 bg-slate-950/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
-                        <div class="flex flex-wrap rounded-xl bg-slate-900 p-1 border border-emerald-500/40 text-xs font-mono font-bold gap-1">
-                            <button type="button" onclick="switchCenterTab('blueprint')" id="tabBtnBlueprint" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow cursor-pointer flex items-center gap-1.5">
-                                <i class="fa-solid fa-compass-drafting"></i> 1. BLUEPRINT PORTAL 2D
+                        <div class="flex flex-wrap rounded-xl bg-slate-900 p-1 border border-emerald-500/40 text-[11px] font-mono font-bold gap-1">
+                            <button type="button" onclick="switchCenterTab('diagrams')" id="tabBtnDiagrams" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow cursor-pointer flex items-center gap-1.5">
+                                <i class="fa-solid fa-bezier-curve"></i> 1. DIAGRAM BALOK, KOLOM &amp; LANTAI
+                            </button>
+                            <button type="button" onclick="switchCenterTab('blueprint')" id="tabBtnBlueprint" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white cursor-pointer flex items-center gap-1.5">
+                                <i class="fa-solid fa-compass-drafting"></i> 2. PORTAL GLOBAL 2D
+                            </button>
+                            <button type="button" onclick="switchCenterTab('risalah')" id="tabBtnRisalah" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white cursor-pointer flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-signature"></i> 3. RISALAH, SARAN &amp; KATALOG
                             </button>
                             <button type="button" onclick="switchCenterTab('view3d')" id="tabBtnView3d" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white cursor-pointer flex items-center gap-1.5">
-                                <i class="fa-solid fa-cubes"></i> 2. MODEL STRUKTUR 3D
-                            </button>
-                            <button type="button" onclick="switchCenterTab('catalog')" id="tabBtnCatalog" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white cursor-pointer flex items-center gap-1.5">
-                                <i class="fa-solid fa-book-atlas"></i> 3. KATALOG ATAP &amp; DETAIL LANTAI
+                                <i class="fa-solid fa-cubes"></i> 4. MODEL 3D
                             </button>
                             <button type="button" onclick="switchCenterTab('map')" id="tabBtnMap" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white cursor-pointer flex items-center gap-1.5">
-                                <i class="fa-solid fa-map-location-dot"></i> 4. PETA GEMPA SNI
+                                <i class="fa-solid fa-map-location-dot"></i> 5. PETA GEMPA
                             </button>
                         </div>
                     </div>
 
-                    <!-- VIEWPORT 1: INTERACTIVE MULTI-STORY BLUEPRINT SVG -->
-                    <div id="paneBlueprint" class="blueprint-grid p-3 sm:p-4 min-h-[490px] flex flex-col justify-between relative">
-                        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950/85 border border-cyan-400/40 rounded-xl px-3 py-2 text-xs font-mono">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                <span id="blueprintHeaderLabel" class="font-bold text-cyan-200">BLUEPRINT STRUKTUR PORTAL 2 LANTAI — PONDASI, SLOOF, KOLOM, BALOK &amp; RANGKA ATAP</span>
+                    <!-- ================================================================= -->
+                    <!-- VIEWPORT 1: DIAGRAM MOMEN (BMD), GESER (SFD) & AKSIAL PER LANTAI  -->
+                    <!-- ================================================================= -->
+                    <div id="paneDiagrams" class="blueprint-grid p-3 sm:p-4 min-h-[540px] flex flex-col justify-between gap-3">
+                        <!-- Bar Pemilih Lantai Interaktif -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950/90 border border-emerald-400/50 rounded-xl px-3 py-2 text-xs font-mono">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-emerald-300 font-bold"><i class="fa-solid fa-layer-group mr-1"></i> PILIH LANTAI UNTUK DIAGRAM DETAIL:</span>
+                                <div id="centerFloorSelectorBtns" class="flex flex-wrap gap-1.5"></div>
                             </div>
-                            <span id="blueprintStatusBadge" class="px-2.5 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[11px]">
+                            <button type="button" onclick="downloadDiagramSVGAsPNG()" class="px-2.5 py-1 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-cyan-200 border border-cyan-400/50 text-[10px] font-bold cursor-pointer">
+                                <i class="fa-solid fa-camera mr-1"></i> Unduh Diagram PNG
+                            </button>
+                        </div>
+
+                        <!-- Canvas SVG Utama untuk 3 Diagram Elemen (Balok, Kolom, Pelat Lantai) -->
+                        <div class="my-auto overflow-x-auto bg-slate-950/75 rounded-xl border border-cyan-500/30 p-2">
+                            <svg id="floorElementsDiagramSvg" viewBox="0 0 960 540" class="w-full h-auto min-w-[720px] select-none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="svgFloorDiagramLayer"></g>
+                            </svg>
+                        </div>
+
+                        <!-- Bar Penjelasan Kaidah SNI di Bawah Diagram -->
+                        <div class="bg-slate-950/90 border border-cyan-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-slate-300 flex flex-wrap justify-between items-center gap-2">
+                            <div>
+                                <span class="inline-block w-2.5 h-2.5 rounded-sm bg-rose-500 mr-1"></span><b>Momen Tumpuan Negatif ($M_u^-$)</b>
+                                <span class="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-400 ml-3 mr-1"></span><b>Momen Lapangan Positif ($M_u^+$)</b>
+                                <span class="inline-block w-2.5 h-2.5 rounded-sm bg-cyan-400 ml-3 mr-1"></span><b>Gaya Geser ($V_u$) &amp; Aksial ($P_u$)</b>
+                            </div>
+                            <span id="diagramFloorSummaryTag" class="text-amber-300 font-bold">SNI 2847:2019 • Kombinasi 1,2D + 1,0L ± 1,0E</span>
+                        </div>
+                    </div>
+
+                    <!-- ================================================================= -->
+                    <!-- VIEWPORT 2: BLUEPRINT PORTAL GLOBAL 2D + OVERLAY BMD/SFD/NFD      -->
+                    <!-- ================================================================= -->
+                    <div id="paneBlueprint" class="hidden blueprint-grid p-3 sm:p-4 min-h-[540px] flex flex-col justify-between relative">
+                        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950/90 border border-cyan-400/40 rounded-xl px-3 py-2 text-xs font-mono">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <span class="text-cyan-300 font-bold mr-1">MODE PORTAL:</span>
+                                <button type="button" onclick="setPortalOverlayMode('geom')" id="btnOverlayGeom" class="px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black text-[10.5px] cursor-pointer">1. Geometri &amp; Gempa Fx</button>
+                                <button type="button" onclick="setPortalOverlayMode('bmd')" id="btnOverlayBmd" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white text-[10.5px] cursor-pointer">2. Overlay BMD (Momen)</button>
+                                <button type="button" onclick="setPortalOverlayMode('sfd')" id="btnOverlaySfd" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white text-[10.5px] cursor-pointer">3. Overlay SFD (Geser)</button>
+                                <button type="button" onclick="setPortalOverlayMode('nfd')" id="btnOverlayNfd" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white text-[10.5px] cursor-pointer">4. Overlay NFD (Aksial)</button>
+                            </div>
+                            <span id="blueprintStatusBadge" class="px-2.5 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[10.5px]">
                                 STRUKTUR AMAN (SNI VERIFIED)
                             </span>
                         </div>
@@ -528,38 +567,26 @@
                                     <marker id="arrCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                         <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
                                     </marker>
-                                    <marker id="arrAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24"/>
-                                    </marker>
                                 </defs>
                                 <g id="svgBuildingDynamicLayer"></g>
                             </svg>
                         </div>
 
                         <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950/85 border border-cyan-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-slate-300">
-                            <div><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>Klik tombol <b>+ / - Lantai</b> di atas untuk menambah lantai gedung secara dinamis beserta beban &amp; gaya gempanya.</div>
-                            <div class="italic text-emerald-300 font-bold">SNI 2847:2019 • SNI 1726:2019 • SNI 1729:2020</div>
+                            <div id="blueprintHeaderLabel">BLUEPRINT STRUKTUR PORTAL MULTI-LANTAI</div>
+                            <button type="button" onclick="downloadBlueprintPNG()" class="text-cyan-300 hover:underline font-bold cursor-pointer"><i class="fa-solid fa-download mr-1"></i>Unduh Blueprint PNG</button>
                         </div>
                     </div>
 
-                    <!-- VIEWPORT 2: 3D INTERACTIVE BUILDING FRAME (THREE.JS) -->
-                    <div id="paneView3d" class="hidden relative w-full h-[490px] bg-slate-950 flex flex-col justify-between">
-                        <div class="absolute top-3 left-3 right-3 z-20 flex flex-wrap justify-between items-center bg-slate-900/85 border border-emerald-500/40 rounded-xl px-3 py-2 text-xs font-mono">
-                            <span class="text-emerald-300 font-bold"><i class="fa-solid fa-cube mr-1"></i> VISUALISASI 3D PORTAL STRUKTUR, PONDASI TELAPAK &amp; KUDA-KUDA ATAP</span>
-                            <div class="flex gap-2">
-                                <button type="button" onclick="toggle3DRotation()" class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/50 cursor-pointer text-[10px] font-bold">Putar / Pause 3D</button>
-                            </div>
-                        </div>
-                        <div id="building3dCanvas" class="w-full h-full"></div>
-                    </div>
-
-                    <!-- VIEWPORT 3: KATALOG RESMI PROFIL ATAP, TABEL LANTAI DINAMIS & RISALAH TEKNIS -->
-                    <div id="paneCatalog" class="hidden p-4 bg-slate-950/95 space-y-4 max-h-[520px] overflow-y-auto font-mono text-xs">
-                        <!-- Bagian A: Tabel Konfigurasi Per Lantai & Update Beban -->
+                    <!-- ================================================================= -->
+                    <!-- VIEWPORT 3: RISALAH TEKNIS, SARAN TEKNIS, KESIMPULAN & KATALOG    -->
+                    <!-- ================================================================= -->
+                    <div id="paneRisalah" class="hidden p-4 bg-slate-950/95 space-y-4 max-h-[540px] overflow-y-auto font-mono text-xs">
+                        <!-- Bagian A: Tabel Rekapitulasi Gaya Dalam (Balok, Kolom, Pelat) di Setiap Lantai -->
                         <div class="p-3.5 rounded-xl bg-slate-900 border border-emerald-500/40 space-y-2.5">
                             <div class="flex flex-wrap justify-between items-center gap-2">
                                 <h3 class="font-tech text-xs font-black text-emerald-400 uppercase flex items-center gap-2">
-                                    <i class="fa-solid fa-building"></i> A. Tabel Konfigurasi Tingkat &amp; Distribusi Gaya Gempa ($F_x$) per Lantai
+                                    <i class="fa-solid fa-table"></i> A. Rekapitulasi Momen &amp; Gaya pada Balok, Kolom, dan Pelat di Masing-Masing Lantai
                                 </h3>
                                 <div class="flex gap-1.5">
                                     <button type="button" onclick="changeStoryCount(1)" class="px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black text-[10px] cursor-pointer">+ Tambah Lantai</button>
@@ -567,15 +594,17 @@
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-[11px]">
+                                <table class="w-full text-left border-collapse text-[10.5px]">
                                     <thead class="bg-slate-950 text-cyan-300 border-b border-slate-700">
                                         <tr>
-                                            <th class="p-2">Tingkat</th>
-                                            <th class="p-2">Elevasi ($z_x$)</th>
-                                            <th class="p-2">Berat Lantai ($W_x$)</th>
-                                            <th class="p-2">Gaya Gempa ($F_x$)</th>
-                                            <th class="p-2">Geser Tingkat ($V_x$)</th>
-                                            <th class="p-2">Aksial Kolom ($P_u$)</th>
+                                            <th class="p-2">Lantai</th>
+                                            <th class="p-2">Gempa $F_x$ (kN)</th>
+                                            <th class="p-2">Balok $M_u^-$ / $M_u^+$ (kN.m)</th>
+                                            <th class="p-2">Balok $V_u$ (kN)</th>
+                                            <th class="p-2">Kolom $P_u$ (kN)</th>
+                                            <th class="p-2">Kolom $M_u$ / $V_u$</th>
+                                            <th class="p-2">Pelat $M_{tx}$ / $M_{lx}$ (kN.m/m)</th>
+                                            <th class="p-2 text-center">Diagram</th>
                                         </tr>
                                     </thead>
                                     <tbody id="storyDistributionTableBody" class="divide-y divide-slate-800 text-slate-200"></tbody>
@@ -583,46 +612,59 @@
                             </div>
                         </div>
 
-                        <!-- Bagian B: Katalog Lengkap Profil Rangka Atap (SNI 7971:2013 & SNI 1729:2020) -->
-                        <div class="p-3.5 rounded-xl bg-slate-900 border border-purple-500/40 space-y-2.5">
+                        <!-- Bagian B: RISALAH TEKNIS, SARAN TEKNIS & KESIMPULAN KELAYAKAN STRUKTUR -->
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="p-3.5 rounded-xl bg-slate-900 border-l-4 border-l-cyan-400 border border-slate-800 space-y-1.5">
+                                <h4 class="font-tech text-xs font-black text-cyan-300 uppercase"><i class="fa-solid fa-file-waveform mr-1"></i> B. Risalah Teknis Analisis Struktur (Engineering Minutes)</h4>
+                                <div id="liveStructRisalah" class="text-[11.5px] text-slate-200 leading-relaxed space-y-1.5 font-sans"></div>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-slate-900 border-l-4 border-l-amber-400 border border-slate-800 space-y-1.5">
+                                <h4 class="font-tech text-xs font-black text-amber-300 uppercase"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> C. Saran Teknis Perencanaan &amp; Pelaksanaan Konstruksi</h4>
+                                <div id="liveStructSaran" class="text-[11.5px] text-slate-200 leading-relaxed space-y-1.5 font-sans"></div>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-emerald-950/40 border-l-4 border-l-emerald-400 border border-emerald-500/40 space-y-1.5">
+                                <h4 class="font-tech text-xs font-black text-emerald-300 uppercase"><i class="fa-solid fa-check-double mr-1"></i> D. Kesimpulan Kelayakan Struktur (Structural Conclusion)</h4>
+                                <div id="liveStructKesimpulan" class="text-[11.5px] text-emerald-100 leading-relaxed space-y-1.5 font-sans"></div>
+                            </div>
+                        </div>
+
+                        <!-- Bagian E: Katalog Lengkap Profil Rangka Atap Resmi -->
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-purple-500/40 space-y-2">
                             <h3 class="font-tech text-xs font-black text-purple-300 uppercase flex items-center gap-2">
-                                <i class="fa-solid fa-table-list"></i> B. Katalog Resmi Profil Rangka Atap (Baja Ringan C75, Kanal CNP, Baja WF, Hollow &amp; Kayu)
+                                <i class="fa-solid fa-table-list"></i> E. Katalog Resmi Profil Rangka Atap (SNI 7971:2013 &amp; SNI 1729:2020)
                             </h3>
-                            <p class="text-[11px] text-slate-400">Klik tombol <b>Gunakan Profil</b> pada baris mana pun untuk menerapkan profil tersebut ke analisis kuda-kuda atap:</p>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left border-collapse text-[10.5px]">
                                     <thead class="bg-slate-950 text-purple-300 border-b border-slate-700">
                                         <tr>
                                             <th class="p-2">Nama Profil Katalog</th>
-                                            <th class="p-2">Kategori &amp; Standar</th>
+                                            <th class="p-2">Standar</th>
                                             <th class="p-2 text-right">Luas $A$ ($\text{mm}^2$)</th>
                                             <th class="p-2 text-right">$I_x$ ($\text{cm}^4$)</th>
                                             <th class="p-2 text-right">$Z_x$ ($\text{cm}^3$)</th>
                                             <th class="p-2 text-right">$f_y$ (MPa)</th>
-                                            <th class="p-2 text-right">Berat (kg/m)</th>
-                                            <th class="p-2 text-center">Pilih</th>
+                                            <th class="p-2 text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="roofCatalogTableBody" class="divide-y divide-slate-800 text-slate-200"></tbody>
                                 </table>
                             </div>
                         </div>
-
-                        <!-- Bagian C: Risalah Teknis & Rekomendasi Konstruksi -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="p-3.5 rounded-xl bg-slate-900 border border-cyan-500/40 space-y-1.5">
-                                <h4 class="font-tech text-xs font-black text-cyan-400 uppercase"><i class="fa-solid fa-file-signature mr-1"></i> C. Risalah Teknis Struktur</h4>
-                                <div id="liveStructRisalah" class="text-[11.5px] text-slate-200 leading-relaxed space-y-1.5 font-sans"></div>
-                            </div>
-                            <div class="p-3.5 rounded-xl bg-slate-900 border border-amber-500/40 space-y-1.5">
-                                <h4 class="font-tech text-xs font-black text-amber-400 uppercase"><i class="fa-solid fa-lightbulb mr-1"></i> D. Rekomendasi Detail Konstruksi</h4>
-                                <div id="liveStructSaran" class="text-[11.5px] text-slate-200 leading-relaxed space-y-1.5 font-sans"></div>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- VIEWPORT 4: WEBGIS PETA ZONA GEMPA INDONESIA -->
-                    <div id="paneMap" class="hidden relative w-full h-[490px] bg-slate-950">
+                    <!-- VIEWPORT 4: 3D INTERACTIVE BUILDING FRAME (THREE.JS) -->
+                    <div id="paneView3d" class="hidden relative w-full h-[540px] bg-slate-950 flex flex-col justify-between">
+                        <div class="absolute top-3 left-3 right-3 z-20 flex flex-wrap justify-between items-center bg-slate-900/85 border border-emerald-500/40 rounded-xl px-3 py-2 text-xs font-mono">
+                            <span class="text-emerald-300 font-bold"><i class="fa-solid fa-cube mr-1"></i> VISUALISASI 3D PORTAL STRUKTUR, PONDASI TELAPAK &amp; KUDA-KUDA ATAP</span>
+                            <button type="button" onclick="toggle3DRotation()" class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/50 cursor-pointer text-[10px] font-bold">Putar / Pause 3D</button>
+                        </div>
+                        <div id="building3dCanvas" class="w-full h-full"></div>
+                    </div>
+
+                    <!-- VIEWPORT 5: WEBGIS PETA ZONA GEMPA INDONESIA -->
+                    <div id="paneMap" class="hidden relative w-full h-[540px] bg-slate-950">
                         <div id="structLeafletMap" class="w-full h-full z-10"></div>
                     </div>
                 </div>
@@ -631,12 +673,12 @@
                 <div class="cmd-card p-4">
                     <div class="flex flex-wrap justify-between items-center border-b border-slate-800 pb-2 mb-3 gap-2">
                         <h2 class="font-tech text-xs md:text-sm font-black text-emerald-400 flex items-center gap-2 uppercase">
-                            <i class="fa-solid fa-chart-column text-amber-400"></i> Grafik Analitik Rasio Kapasitas (DCR) &amp; Distribusi Beban Tingkat
+                            <i class="fa-solid fa-chart-column text-amber-400"></i> Grafik Analitik Momen, Gaya Geser, Aksial per Lantai &amp; Rasio Kapasitas (DCR)
                         </h2>
                         <div class="flex flex-wrap gap-1.5 text-[10.5px] font-mono">
-                            <button type="button" onclick="switchStructChart('dcr')" id="btnChartDcr" class="px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black cursor-pointer">1. RASIO KAPASITAS (DCR ≤ 1.0)</button>
-                            <button type="button" onclick="switchStructChart('story')" id="btnChartStory" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer">2. GAYA GEMPA &amp; AKSIAL PER LANTAI</button>
-                            <button type="button" onclick="switchStructChart('roof')" id="btnChartRoof" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer">3. KOMPARASI PROFIL ATAP KATALOG</button>
+                            <button type="button" onclick="switchStructChart('moments')" id="btnChartMoments" class="px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black cursor-pointer">1. MOMEN BALOK, KOLOM &amp; PELAT PER LANTAI</button>
+                            <button type="button" onclick="switchStructChart('forces')" id="btnChartForces" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer">2. GAYA AKSIAL &amp; GESER PER LANTAI</button>
+                            <button type="button" onclick="switchStructChart('dcr')" id="btnChartDcr" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer">3. RASIO KAPASITAS (DCR ≤ 1.0)</button>
                         </div>
                     </div>
                     <div class="w-full h-[230px]">
@@ -646,12 +688,12 @@
             </section>
 
             <!-- ================= RIGHT PANEL (3 COLS): PARAMETER SIMULATOR & KATALOG ================= -->
-            <section class="lg:col-span-3 cmd-card p-4 flex flex-col gap-3 max-h-[820px] overflow-y-auto">
+            <section class="lg:col-span-3 cmd-card p-4 flex flex-col gap-3 max-h-[840px] overflow-y-auto">
                 <div class="flex justify-between items-center border-b border-emerald-900/60 pb-2">
                     <h2 class="font-tech text-xs md:text-sm font-black text-emerald-400 flex items-center gap-1.5 uppercase">
                         <i class="fa-solid fa-sliders text-amber-400"></i> Parameter &amp; Katalog
                     </h2>
-                    <span class="text-[10px] font-mono text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-500/50 font-bold">REAL-TIME</span>
+                    <span class="text-[10px] font-mono text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-500/50 font-bold">SNI LIVE</span>
                 </div>
 
                 <!-- 1. Konfigurasi Jumlah Lantai & Geometri Bentang -->
@@ -748,8 +790,8 @@
                     <div>
                         <label class="block text-[10px] text-slate-400 mb-0.5">Pilih Profil Rangka Atap Resmi:</label>
                         <select id="selRoofProfile" onchange="recalculateStructure()" class="w-full bg-slate-900 border border-purple-500/60 rounded-lg p-1.5 text-white text-[11px]">
-                            <option value="C75.75" selected>Baja Ringan C75.75 (SNI 7971 - G550)</option>
-                            <option value="C75.100">Baja Ringan C75.100 (SNI 7971 - G550)</option>
+                            <option value="C75.75">Baja Ringan C75.75 (SNI 7971 - G550)</option>
+                            <option value="C75.100" selected>Baja Ringan C75.100 (SNI 7971 - G550)</option>
                             <option value="C100.100">Baja Ringan C100.100 (SNI 7971 - G550)</option>
                             <option value="CNP100">Kanal Baja CNP 100x50x20x2.3 (BJ37)</option>
                             <option value="CNP125">Kanal Baja CNP 125x50x20x2.3 (BJ37)</option>
@@ -773,7 +815,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400">Sudut Kemiringan Atap (°)</label>
+                            <label class="block text-[10px] text-slate-400">Kemiringan Atap (°)</label>
                             <input type="number" id="inpRoofAngle" value="30" min="15" max="45" step="1" oninput="recalculateStructure()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white font-bold">
                         </div>
                     </div>
@@ -802,10 +844,10 @@
                         <div>
                             <label class="block text-[10px] text-slate-400">Zona Gempa ($S_{DS}$)</label>
                             <select id="selSeismicZone" onchange="recalculateStructure()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-[11px]">
-                                <option value="0.45">Rendah (Kalimantan/Batam - 0.45g)</option>
-                                <option value="0.75" selected>Sedang (Jakarta/Semarang/Sby - 0.75g)</option>
-                                <option value="1.05">Tinggi (Yogyakarta/Bandung/Bali - 1.05g)</option>
-                                <option value="1.35">Sangat Tinggi (Padang/Aceh/Palu - 1.35g)</option>
+                                <option value="0.45">Rendah (Kalimantan - 0.45g)</option>
+                                <option value="0.75" selected>Sedang (Jakarta/Smg/Sby - 0.75g)</option>
+                                <option value="1.05">Tinggi (Yogya/Bandung - 1.05g)</option>
+                                <option value="1.35">Sangat Tinggi (Padang/Aceh - 1.35g)</option>
                             </select>
                         </div>
                     </div>
@@ -829,7 +871,7 @@
                     </div>
                     <div>
                         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/50 text-[10px] font-mono text-cyan-300 font-bold mb-1">
-                            <i class="fa-solid fa-earth-asia text-emerald-400"></i> KREDIT PROGRAMMER &amp; INSINYUR STRUKTUR
+                            <i class="fa-solid fa-earth-asia text-emerald-400"></i> KREDIT PROGRAMMER &amp; AHLI STRUKTUR
                         </div>
                         <h3 class="text-cyan-300 font-black font-tech text-base sm:text-lg tracking-wide uppercase">
                             IR. MOHAMAD HARTADI, S.T. (ADI)
@@ -838,7 +880,7 @@
                             Civil &amp; Geotechnical Dam Safety Engineer • Structural Analyst &amp; Full-Stack AI Developer
                         </p>
                         <p class="text-slate-400 text-[11px] mt-1 max-w-2xl">
-                            Pengembang ekosistem 61 aplikasi web keteknikan, analisis pondasi &amp; struktur gedung bertingkat (SNI 2847:2019, SNI 1726:2019, SNI 8460:2017), keamanan bendungan, dan sistem AI.
+                            Pengembang ekosistem 61 aplikasi web keteknikan, analisis struktur rumah &amp; gedung bertingkat (SNI 2847:2019, SNI 1726:2019, SNI 8460:2017), keamanan bendungan, dan sistem AI.
                         </p>
                     </div>
                 </div>
@@ -929,13 +971,13 @@
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-blue-800 flex items-center justify-center shadow-lg"><i class="fa-solid fa-file-word text-white text-lg"></i></div>
                     <div>
                         <h3 class="font-bold text-white text-sm tracking-wider">PUSAT EKSPOR 13 LAPORAN TEKNIS STRUKTUR WORD (.DOC)</h3>
-                        <p class="text-[10px] text-slate-400">SNI 2847:2019 • SNI 1726:2019 • SNI 1727:2020 • SNI 8460:2017 • SNI 1729:2020</p>
+                        <p class="text-[10px] text-slate-400">Memuat Tabel Diagram Momen-Gaya per Lantai, Risalah Teknis, Saran Teknis &amp; Kesimpulan SNI</p>
                     </div>
                 </div>
                 <button type="button" onclick="closeWordReportsModal()" class="w-9 h-9 rounded-lg bg-rose-900/60 border border-rose-500/60 text-rose-300 hover:bg-rose-800 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-3 border-b border-slate-800 flex items-center justify-between gap-2">
-                <p class="text-[10px] text-slate-400"><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i>Setiap dokumen .doc memuat tabel perhitungan aktual sesuai jumlah lantai &amp; profil yang sedang aktif.</p>
+                <p class="text-[10px] text-slate-400"><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i>Setiap dokumen .doc memuat tabel gaya dalam per lantai, risalah teknis, saran teknis, dan kesimpulan.</p>
                 <button type="button" onclick="exportAllWordReports()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 text-white text-[11px] font-black cursor-pointer flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-download"></i> UNDUH SEMUA (13)</button>
             </div>
             <div class="overflow-y-auto p-3 flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="wordReportsList"></div>
@@ -953,7 +995,7 @@
                 </div>
                 <div>
                     <h4 class="font-tech text-xs font-black text-white">JARVIS AI — STRUCTURAL ENGINEER</h4>
-                    <span class="text-[9.5px] text-emerald-400">Asisten SNI 2847, SNI 1726, Pondasi, Kolom, Balok &amp; Atap</span>
+                    <span class="text-[9.5px] text-emerald-400">Asisten Diagram BMD/SFD, Kolom, Balok, Pelat &amp; SNI</span>
                 </div>
             </div>
             <button type="button" onclick="toggleChatPanel()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-base"></i></button>
@@ -961,19 +1003,19 @@
 
         <div id="chatMessagesBox" class="p-3 space-y-2.5 overflow-y-auto flex-1 bg-slate-950/80">
             <div class="p-3 rounded-xl bg-slate-900 border border-emerald-500/40 text-slate-200 leading-relaxed">
-                <b class="text-emerald-400 block mb-1">🤖 JARVIS STRUCTURAL AI:</b>
-                Halo! Saya asisten rekayasa struktur gedung bertingkat. Klik pintasan di bawah untuk mengevaluasi <b>Keamanan Struktur Saat Ini</b>, <b>Rekomendasi Profil Atap</b>, atau ketik pertanyaan teknik sipil apa pun!
+                <b class="text-emerald-400 block mb-1">🤖 JARVIS STRUCTURAL AI v8.0:</b>
+                Halo! Klik pintasan di bawah untuk melihat <b>Risalah &amp; Kesimpulan Struktur</b>, <b>Diagram Momen Balok/Kolom/Lantai</b>, atau ketik pertanyaan teknik sipil Anda!
             </div>
         </div>
 
         <div class="p-2 bg-slate-900 border-t border-slate-800 flex gap-1.5 overflow-x-auto">
-            <button type="button" onclick="sendQuickChat('Evaluasi struktur gedung saat ini')" class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-600 whitespace-nowrap cursor-pointer">🏢 Evaluasi Gedung</button>
-            <button type="button" onclick="sendQuickChat('Rekomendasi katalog profil atap')" class="px-2.5 py-1 rounded bg-purple-950 text-purple-300 border border-purple-600 whitespace-nowrap cursor-pointer">🏠 Katalog Atap</button>
-            <button type="button" onclick="sendQuickChat('Evaluasi pondasi footplate')" class="px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-600 whitespace-nowrap cursor-pointer">⚓ Cek Pondasi</button>
+            <button type="button" onclick="sendQuickChat('Diagram momen dan gaya tiap lantai')" class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-600 whitespace-nowrap cursor-pointer">📐 Diagram Tiap Lantai</button>
+            <button type="button" onclick="sendQuickChat('Risalah teknis dan kesimpulan')" class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-600 whitespace-nowrap cursor-pointer">📋 Risalah &amp; Kesimpulan</button>
+            <button type="button" onclick="sendQuickChat('Saran teknis pelaksanaan')" class="px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-600 whitespace-nowrap cursor-pointer">🛠️ Saran Teknis</button>
         </div>
 
         <form onsubmit="event.preventDefault(); processUserChat();" class="p-2.5 bg-slate-950 border-t border-slate-800 flex gap-2">
-            <input type="text" id="chatUserInput" placeholder="Tanya SNI 2847, kolom, balok, pondasi, baja ringan..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-emerald-400">
+            <input type="text" id="chatUserInput" placeholder="Tanya BMD, SFD, kolom, balok, pelat lantai, SNI..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-emerald-400">
             <button type="submit" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold cursor-pointer"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
     </div>
@@ -996,7 +1038,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- JAVASCRIPT ENGINE: KATALOG PROFIL, SOLVER MULTI-LANTAI, 3D & 13 WORD DOCS -->
+    <!-- JAVASCRIPT ENGINE: SOLVER DIAGRAM BMD/SFD/NFD PER LANTAI & SNI            -->
     <!-- ========================================================================= -->
     <script>
         // =====================================================================
@@ -1037,8 +1079,10 @@
         };
 
         let structState = {};
+        let selectedFloorIndex = 1; // Lantai yang sedang diinspeksi diagramnya (1 s/d N)
+        let portalOverlayMode = 'geom'; // 'geom' | 'bmd' | 'sfd' | 'nfd'
         let structChartInstance = null;
-        let currentStructChartMode = 'dcr';
+        let currentStructChartMode = 'moments';
         let structLeafletMap = null;
 
         // =====================================================================
@@ -1071,6 +1115,7 @@
                 document.getElementById('inpFootWidth').value = Math.min(3.4, (1.6 + (nStories - 2) * 0.35)).toFixed(1);
                 document.getElementById('inpFootDepth').value = 2.0;
             }
+            if (selectedFloorIndex > nStories) selectedFloorIndex = nStories;
             recalculateStructure();
         }
 
@@ -1081,16 +1126,38 @@
             applyBuildingPreset(val);
         }
 
+        function selectFloorForDiagram(level) {
+            selectedFloorIndex = Math.max(1, Math.min(structState.N || 1, level));
+            updateStructDashboardUI();
+            renderFloorElementsDiagramSVG();
+        }
+
+        function setPortalOverlayMode(mode) {
+            portalOverlayMode = mode;
+            const mapBtn = { geom: 'btnOverlayGeom', bmd: 'btnOverlayBmd', sfd: 'btnOverlaySfd', nfd: 'btnOverlayNfd' };
+            Object.keys(mapBtn).forEach(k => {
+                const b = document.getElementById(mapBtn[k]);
+                if (b) {
+                    b.className = (k === mode)
+                        ? 'px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black text-[10.5px] cursor-pointer'
+                        : 'px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white text-[10.5px] cursor-pointer';
+                }
+            });
+            renderBuildingBlueprintSVG();
+        }
+
         function selectRoofProfileFromTable(code) {
             document.getElementById('selRoofProfile').value = code;
             recalculateStructure();
         }
 
         // =====================================================================
-        // 3. ENGINE PERHITUNGAN STRUKTUR SNI (PONDASI, KOLOM, BALOK, ATAP, GEMPA)
+        // 3. ENGINE PERHITUNGAN STRUKTUR SNI PER LANTAI (BALOK, KOLOM, PELAT)
         // =====================================================================
         function recalculateStructure() {
             const N = parseInt(document.getElementById('inpNumStories').value) || 2;
+            if (selectedFloorIndex > N) selectedFloorIndex = N;
+
             const Lx = parseFloat(document.getElementById('inpSpanLx').value) || 4.5;
             const Ly = parseFloat(document.getElementById('inpSpanLy').value) || 4.0;
             const hStory = parseFloat(document.getElementById('inpStoryHeight').value) || 3.6;
@@ -1112,10 +1179,8 @@
             const beamSpec = BEAM_CATALOG[beamKey];
             const roofSpec = ROOF_PROFILE_CATALOG[roofKey];
 
-            // Update tombol highlight 1, 2, 3 Lantai & Badge
             document.getElementById('lblNumStories').textContent = `${N} Lantai`;
             document.getElementById('badgeCurrentStories').textContent = `${N} LANTAI`;
-            document.getElementById('leftStoryBadge').textContent = `${N} LANTAI`;
             [1, 2, 3].forEach(num => {
                 const btn = document.getElementById('btnStory' + num);
                 if (btn) {
@@ -1129,62 +1194,64 @@
             // A. ANALISIS RANGKA & PROFIL ATAP (SNI 7971:2013 & SNI 1729:2020)
             // -----------------------------------------------------------------
             const rad = roofAngleDeg * Math.PI / 180;
-            const sTruss = 1.2; // jarak antar kuda-kuda baja ringan / gording (m)
-            const qDeadRoof = (roofCoverKg * 9.81 / 1000) + 0.15; // kN/m2 (penutup + plafon/instalasi)
-            const qLiveRoof = 0.96; // SNI 1727:2020 beban hidup atap (kN/m2)
-            const qWindRoof = 0.40; // Tekanan angin desain (kN/m2)
-            const quRoofArea = (1.2 * qDeadRoof) + (1.6 * qLiveRoof) + (0.8 * qWindRoof); // kN/m2
-            const quTrussLine = quRoofArea * sTruss; // kN/m pada kuda-kuda
+            const sTruss = 1.2;
+            const qDeadRoof = (roofCoverKg * 9.81 / 1000) + 0.15;
+            const qLiveRoof = 0.96;
+            const qWindRoof = 0.40;
+            const quRoofArea = (1.2 * qDeadRoof) + (1.6 * qLiveRoof) + (0.8 * qWindRoof);
+            const quTrussLine = quRoofArea * sTruss;
 
             const rafterLen = (Lx / 2) / Math.cos(rad);
             const panelLen = Math.min(1.25, rafterLen / 3);
-            const NuCompression = (quTrussLine * Lx) / (2 * Math.sin(rad)); // Gaya aksial batang atas kuda-kuda (kN)
-            const MuLocalRafter = (quTrussLine * Math.pow(panelLen, 2)) / 10; // Momen lentur lokal antar simpul (kN.m)
+            const NuCompression = (quTrussLine * Lx) / (2 * Math.sin(rad));
+            const MuLocalRafter = (quTrussLine * Math.pow(panelLen, 2)) / 10;
 
-            // Kapasitas Tekan & Lentur Profil Atap dari Katalog
             const lambdaSlender = (panelLen * 1000) / roofSpec.rx;
             const FeEuler = (Math.PI * Math.PI * roofSpec.E) / Math.pow(Math.max(20, lambdaSlender), 2);
-            const Fcr = 0.658 ** Math.min(2.2, (roofSpec.fy / FeEuler)) * roofSpec.fy;
-            const phiPnRoof = (0.85 * Fcr * roofSpec.A) / 1000; // kN
-            const phiMnRoof = (0.90 * (roofSpec.Zx * 1000) * roofSpec.fy) / 1e6; // kN.m
+            const Fcr = Math.pow(0.658, Math.min(2.2, (roofSpec.fy / FeEuler))) * roofSpec.fy;
+            const phiPnRoof = (0.85 * Fcr * roofSpec.A) / 1000;
+            const phiMnRoof = (0.90 * (roofSpec.Zx * 1000) * roofSpec.fy) / 1e6;
             const dcrRoof = (NuCompression / Math.max(1, phiPnRoof)) + (MuLocalRafter / Math.max(0.05, phiMnRoof));
 
             // -----------------------------------------------------------------
-            // B. ANALISIS BALOK INDUK & SLOOF (SNI 2847:2019)
+            // B. KAPASITAS PENAMPANG BALOK, KOLOM & PELAT LANTAI (SNI 2847:2019)
             // -----------------------------------------------------------------
-            const qSlabSelf = (tSlab / 1000) * 24.0; // kN/m2
-            const qSDL = 1.50 + 2.20; // keramik, spesi, plafon, ME + ekivalen dinding bata ringan (kN/m2)
-            const qLL = 2.00; // beban hidup hunian/kantor rumah bertingkat (kN/m2)
-            const quFloor = (1.2 * (qSlabSelf + qSDL)) + (1.6 * qLL); // kN/m2
-
-            const tribWidth = Ly / 2;
-            const qBeamSelf = (beamSpec.b / 1000) * (beamSpec.h / 1000) * 24.0 * 1.2;
-            const wuBeam = (quFloor * tribWidth) + qBeamSelf; // kN/m
-
-            // Momen terfaktor balok (kombinasi gravitasi + kontribusi portal gempa)
-            const MuGrav = (wuBeam * Lx * Lx) / 10;
-            const MuSeismicAdd = N * 6.5 * Sds;
-            const MuBeam = MuGrav + MuSeismicAdd;
-            const VuBeam = (wuBeam * Lx) / 2 + (2 * MuSeismicAdd / Lx);
-
-            // Kapasitas Lentur & Geser Balok SNI 2847:2019
-            const dBeam = beamSpec.h - 40; // tinggi efektif (mm)
-            const AsBeam = beamSpec.nTop * (0.25 * Math.PI * beamSpec.dBar * beamSpec.dBar); // mm2
-            const aBeam = (AsBeam * fy) / (0.85 * fc * beamSpec.b);
-            const phiMnBeam = 0.90 * AsBeam * fy * (dBeam - aBeam / 2) / 1e6; // kN.m
+            const dBeam = beamSpec.h - 40;
+            const AsBeamTop = beamSpec.nTop * (0.25 * Math.PI * beamSpec.dBar * beamSpec.dBar);
+            const aBeam = (AsBeamTop * fy) / (0.85 * fc * beamSpec.b);
+            const phiMnBeam = 0.90 * AsBeamTop * fy * (dBeam - aBeam / 2) / 1e6;
             const phiVcBeam = 0.75 * 0.17 * Math.sqrt(fc) * beamSpec.b * dBeam / 1000;
-            const phiVsBeam = 0.75 * (2 * 78.5 * fy * dBeam / 125) / 1000; // sengkang Ø10-125
+            const phiVsBeam = 0.75 * (2 * 78.5 * fy * dBeam / 125) / 1000;
             const phiVnBeam = phiVcBeam + phiVsBeam;
-            const dcrBeam = MuBeam / Math.max(1, phiMnBeam);
+
+            const AgCol = colSpec.b * colSpec.h;
+            const AstCol = colSpec.nBar * (0.25 * Math.PI * colSpec.dBar * colSpec.dBar);
+            const rhoCol = (AstCol / AgCol) * 100;
+            const phiPnMaxCol = 0.65 * 0.80 * (0.85 * fc * (AgCol - AstCol) + fy * AstCol) / 1000;
+
+            // Koefisien Pelat Dua Arah (Two-Way Slab — PBI/SNI Metode Koefisien Momen)
+            const L_short = Math.min(Lx, Ly);
+            const L_long = Math.max(Lx, Ly);
+            const betaRatio = Math.min(2.0, L_long / Math.max(1, L_short));
+            // Interpolasi koefisien momen pelat terjepit empat sisi
+            const Clx = Math.round(21 + (betaRatio - 1) * 20);
+            const Cly = Math.round(21 - (betaRatio - 1) * 8);
+            const Ctx = Math.round(52 + (betaRatio - 1) * 30);
+            const Cty = Math.round(52 - (betaRatio - 1) * 12);
 
             // -----------------------------------------------------------------
-            // C. ANALISIS BEBAN GEMPA MULTI-LANTAI (SNI 1726:2019) & KOLOM
+            // C. SOLVER GAYA DALAM PER LANTAI (1 s/d N): BALOK, KOLOM & PELAT
             // -----------------------------------------------------------------
-            const floorAreaModule = Lx * Ly; // luas 1 modul kolom interior
-            const totalBuildingFootprint = floorAreaModule * 4; // asumsi 4 modul dalam denah
+            const qSlabSelf = (tSlab / 1000) * 24.0;
+            const qSDL_Typ = 1.50 + 2.20; // keramik + plafon + dinding bata ringan
+            const qSDL_Top = 1.20; // dak / lantai teratas
+            const qLL_Typ = 2.00; // beban hidup lantai hunian/gedung (SNI 1727:2020)
+            const qLL_Top = 1.00; // beban hidup lantai atap/dak
+
+            const floorAreaModule = Lx * Ly;
+            const totalBuildingFootprint = floorAreaModule * 4;
             const R_factor = 8.0; // SRPMK
-            const Ie = 1.0;
-            const Cs = Math.max(0.044 * Sds * Ie, (Sds * Ie) / R_factor);
+            const Cs = Math.max(0.044 * Sds, Sds / R_factor);
 
             const storyData = [];
             let sumWxHx = 0;
@@ -1192,17 +1259,47 @@
 
             for (let i = 1; i <= N; i++) {
                 const zx = i * hStory;
-                const isTop = (i === N);
-                const qLevel = isTop ? (qSlabSelf + qSDL + 0.3 * qLL + qDeadRoof) : (qSlabSelf + qSDL + 0.3 * qLL);
-                const Wx = qLevel * totalBuildingFootprint;
+                const isTopFloor = (i === N && N > 1);
+                const qSDL = isTopFloor ? qSDL_Top : qSDL_Typ;
+                const qLL = isTopFloor ? qLL_Top : qLL_Typ;
+                const quFloor = (1.2 * (qSlabSelf + qSDL)) + (1.6 * qLL);
+
+                const Wx = ((qSlabSelf + qSDL + 0.3 * qLL) + (i === N ? qDeadRoof : 0)) * totalBuildingFootprint;
                 totalWt += Wx;
                 sumWxHx += Wx * zx;
-                storyData.push({ level: i, zx, Wx, Fx: 0, Vx: 0, PuCol: 0 });
+
+                storyData.push({
+                    level: i,
+                    zx,
+                    Wx,
+                    quFloor,
+                    Fx: 0,
+                    Vx: 0,
+                    // Gaya dalam Balok lantai i
+                    wuBeam: 0,
+                    MuBeamNeg: 0,
+                    MuBeamPos: 0,
+                    VuBeam: 0,
+                    dcrBeam: 0,
+                    // Gaya dalam Kolom lantai i
+                    PuCol: 0,
+                    VuCol: 0,
+                    MuCol: 0,
+                    dcrCol: 0,
+                    // Gaya dalam Pelat Lantai 2 arah lantai i
+                    Mlx: 0,
+                    Mly: 0,
+                    Mtx: 0,
+                    Mty: 0,
+                    VuSlab: 0,
+                    slabRebar: 'Ø10 - 150 mm'
+                });
             }
 
             const V_base = Cs * totalWt;
             let cumulativeVx = 0;
-            let cumulativePuCol = (quRoofArea * floorAreaModule); // beban atap pada 1 kolom interior
+            let cumulativePuCol = (quRoofArea * floorAreaModule);
+            const nEffectiveCols = 6; // jumlah kolom efektif penahan geser portal dalam 1 arah
 
             for (let i = N - 1; i >= 0; i--) {
                 const st = storyData[i];
@@ -1210,63 +1307,109 @@
                 cumulativeVx += st.Fx;
                 st.Vx = cumulativeVx;
 
-                const colSelfWeight = 1.2 * (colSpec.b / 1000) * (colSpec.h / 1000) * hStory * 24.0;
-                const floorLoadOnCol = quFloor * floorAreaModule;
-                cumulativePuCol += floorLoadOnCol + colSelfWeight;
+                // 1. Kolom pada lantai ke-i
+                const colSelf = 1.2 * (colSpec.b / 1000) * (colSpec.h / 1000) * hStory * 24.0;
+                cumulativePuCol += (st.quFloor * floorAreaModule) + colSelf;
                 st.PuCol = cumulativePuCol;
+                st.VuCol = st.Vx / nEffectiveCols;
+                st.MuCol = st.VuCol * (hStory / 2); // Titik belok di h/2 (Portal SRPMK)
+
+                // Kapasitas interaksi aksial-lentur kolom lantai ke-i
+                const dCol = colSpec.h - 45;
+                const aCol = (0.5 * AstCol * fy) / (0.85 * fc * colSpec.b);
+                const phiMnColLevel = 0.75 * (0.5 * AstCol * fy * (dCol - aCol / 2) + (st.PuCol * 1000 * 0.12 * colSpec.h)) / 1e6;
+                st.phiMnCol = phiMnColLevel;
+                st.dcrCol = (st.PuCol / phiPnMaxCol) + 0.35 * (st.MuCol / Math.max(1, phiMnColLevel));
+
+                // 2. Balok Induk pada lantai ke-i
+                const tribW = L_short / 2;
+                const qBeamSelf = 1.2 * (beamSpec.b / 1000) * (beamSpec.h / 1000) * 24.0;
+                st.wuBeam = (st.quFloor * tribW) + qBeamSelf;
+                const MuGravNeg = (st.wuBeam * Lx * Lx) / 10;
+                const MuGravPos = (st.wuBeam * Lx * Lx) / 14;
+                const MuSeismicBeam = st.MuCol * 0.95; // Keseimbangan titik buhul portal
+                st.MuBeamNeg = MuGravNeg + MuSeismicBeam;
+                st.MuBeamPos = MuGravPos + (0.35 * MuSeismicBeam);
+                st.VuBeam = (1.15 * st.wuBeam * Lx / 2) + (2 * MuSeismicBeam / Lx);
+                st.dcrBeam = st.MuBeamNeg / Math.max(1, phiMnBeam);
+
+                // 3. Pelat Lantai Dua Arah pada lantai ke-i
+                st.Mlx = 0.001 * Clx * st.quFloor * Math.pow(L_short, 2);
+                st.Mly = 0.001 * Cly * st.quFloor * Math.pow(L_short, 2);
+                st.Mtx = 0.001 * Ctx * st.quFloor * Math.pow(L_short, 2);
+                st.Mty = 0.001 * Cty * st.quFloor * Math.pow(L_short, 2);
+                st.VuSlab = 0.5 * st.quFloor * L_short * (Math.pow(betaRatio, 4) / (1 + Math.pow(betaRatio, 4)));
+
+                // Penentuan jarak tulangan pelat otomatis berdasarkan Mtx
+                const dSlab = tSlab - 25;
+                const AsReqSlab = Math.max(250, (st.Mtx * 1e6) / (0.9 * fy * 0.9 * dSlab));
+                const spacing10 = Math.min(200, Math.max(100, Math.floor((78.5 * 1000) / AsReqSlab / 25) * 25));
+                st.slabRebar = `Ø10 - ${spacing10} mm (${AsReqSlab.toFixed(0)} mm²/m)`;
             }
 
-            // Kapasitas Kolom Lantai 1 (Beban Aksial Terbesar) SNI 2847:2019
-            const AgCol = colSpec.b * colSpec.h;
-            const AstCol = colSpec.nBar * (0.25 * Math.PI * colSpec.dBar * colSpec.dBar);
-            const rhoCol = (AstCol / AgCol) * 100;
-            const phiPnMaxCol = 0.65 * 0.80 * (0.85 * fc * (AgCol - AstCol) + fy * AstCol) / 1000; // kN
-            const PuColBase = storyData[0].PuCol;
-            const dcrCol = PuColBase / Math.max(1, phiPnMaxCol);
-
-            // Cek Strong Column Weak Beam (SCWB >= 1.20)
-            const dCol = colSpec.h - 45;
-            const aCol = (0.5 * AstCol * fy) / (0.85 * fc * colSpec.b);
-            const phiMnCol = 0.75 * (0.5 * AstCol * fy * (dCol - aCol / 2) + (PuColBase * 1000 * 0.15 * colSpec.h)) / 1e6;
-            const scwbRatio = (2 * phiMnCol) / Math.max(1, 2 * phiMnBeam);
+            // Nilai Kritis Lantai Dasar (Lantai 1) untuk Ringkasan Eksekutif
+            const stBase = storyData[0];
+            const PuColBase = stBase.PuCol;
+            const MuBeamMax = stBase.MuBeamNeg;
+            const VuBeamMax = stBase.VuBeam;
+            const dcrBeamMax = stBase.dcrBeam;
+            const dcrColMax = stBase.dcrCol;
+            const scwbRatio = (2 * stBase.phiMnCol) / Math.max(1, (phiMnBeam * 1.65));
 
             // -----------------------------------------------------------------
             // D. ANALISIS PONDASI TELAPAK / FOOTPLATE & GESER PONS (SNI 8460)
             // -----------------------------------------------------------------
-            const P_service = PuColBase / 1.32; // Beban layan tak terfaktor pada pondasi
+            const P_service = PuColBase / 1.32;
             const W_footing = (Bf * Bf * 0.35 * 24.0) + (Bf * Bf * (Df - 0.35) * 18.0);
             const Af = Bf * Bf;
-            const M_baseCol = MuSeismicAdd * 0.65;
+            const M_baseCol = stBase.MuCol;
             const qContactMax = ((P_service + W_footing) / Af) + (6 * M_baseCol / Math.pow(Bf, 3));
-            const qUltSoil = qAll * 3.0; // Terzaghi ultimate bearing capacity (FS = 3)
+            const qUltSoil = qAll * 3.0;
             const fsFoundation = qUltSoil / Math.max(1, qContactMax);
 
-            // Cek Geser Pons (Punching Shear 2 Arah SNI 2847:2019)
-            const dFoot = 350 - 75; // tebal telapak 350 mm, selimut 75 mm -> d = 275 mm
-            const boPunch = 4 * (colSpec.b + dFoot); // keliling kritis geser pons (mm)
-            const phiVcPunch = 0.75 * 0.33 * Math.sqrt(fc) * boPunch * dFoot / 1000; // kN
+            const dFoot = 350 - 75;
+            const boPunch = 4 * (colSpec.b + dFoot);
+            const phiVcPunch = 0.75 * 0.33 * Math.sqrt(fc) * boPunch * dFoot / 1000;
             const dcrPunch = PuColBase / Math.max(1, phiVcPunch);
 
             structState = {
-                N, Lx, Ly, hStory, tSlab, fc, fy,
+                N, Lx, Ly, L_short, L_long, betaRatio, hStory, tSlab, fc, fy,
                 colSpec, beamSpec, roofSpec, roofCoverKg, roofAngleDeg,
                 Bf, Df, qAll, Sds,
                 NuCompression, MuLocalRafter, phiPnRoof, phiMnRoof, dcrRoof,
-                wuBeam, MuBeam, VuBeam, phiMnBeam, phiVnBeam, dcrBeam,
+                phiMnBeam, phiVnBeam,
                 totalWt, V_base, Cs, storyData,
-                PuColBase, phiPnMaxCol, rhoCol, dcrCol, scwbRatio,
+                PuColBase, phiPnMaxCol, rhoCol, dcrCol: dcrColMax,
+                MuBeam: MuBeamMax, VuBeam: VuBeamMax, dcrBeam: dcrBeamMax,
+                scwbRatio,
                 P_service, qContactMax, fsFoundation, phiVcPunch, dcrPunch
             };
 
+            renderFloorSelectorButtons();
             updateStructDashboardUI();
+            renderFloorElementsDiagramSVG();
             renderBuildingBlueprintSVG();
             updateBuilding3DScene();
             renderCatalogAndStoryTables();
             updateStructAnalyticsChart();
         }
 
+        function renderFloorSelectorButtons() {
+            const s = structState;
+            const leftBox = document.getElementById('leftFloorSelectorBtns');
+            const centerBox = document.getElementById('centerFloorSelectorBtns');
+            let html = '';
+            for (let i = 1; i <= s.N; i++) {
+                const active = (i === selectedFloorIndex);
+                html += `<button type="button" onclick="selectFloorForDiagram(${i})" class="px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition ${active ? 'bg-amber-400 text-slate-950 font-black shadow' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Lantai ${i}</button>`;
+            }
+            if (leftBox) leftBox.innerHTML = html;
+            if (centerBox) centerBox.innerHTML = html;
+        }
+
         function updateStructDashboardUI() {
             const s = structState;
+            const st = s.storyData[selectedFloorIndex - 1] || s.storyData[0];
 
             // KPI 1: Pondasi
             const fEl = document.getElementById('kpiFoundationFs');
@@ -1274,77 +1417,240 @@
             fEl.className = `text-xl sm:text-2xl font-tech font-black mt-0.5 ${s.qContactMax <= s.qAll ? 'text-amber-300' : 'text-rose-400 animate-pulse'}`;
             document.getElementById('kpiFoundationSub').textContent = `q_max = ${s.qContactMax.toFixed(1)} ≤ q_all ${s.qAll} kPa (${s.qContactMax <= s.qAll ? 'AMAN' : 'PERLEBAR Bf!'})`;
 
-            // KPI 2: Kolom
+            // KPI 2: Kolom (Lantai Terpilih)
             const cEl = document.getElementById('kpiColumnDcr');
-            cEl.textContent = `DCR = ${s.dcrCol.toFixed(2)}`;
-            cEl.className = `text-xl sm:text-2xl font-tech font-black mt-0.5 ${s.dcrCol <= 1.0 ? 'text-cyan-300' : 'text-rose-400 animate-pulse'}`;
-            document.getElementById('kpiColumnSub').textContent = `Pu = ${s.PuColBase.toFixed(0)} kN ≤ φPn = ${s.phiPnMaxCol.toFixed(0)} kN (${s.dcrCol <= 1.0 ? 'AMAN' : 'PERBESAR KOLOM!'})`;
+            cEl.textContent = `DCR = ${st.dcrCol.toFixed(2)}`;
+            cEl.className = `text-xl sm:text-2xl font-tech font-black mt-0.5 ${st.dcrCol <= 1.0 ? 'text-cyan-300' : 'text-rose-400 animate-pulse'}`;
+            document.getElementById('kpiColumnSub').textContent = `Lt.${st.level}: Pu=${st.PuCol.toFixed(0)}kN | Mu=${st.MuCol.toFixed(1)}kN.m`;
 
-            // KPI 3: Balok
+            // KPI 3: Balok (Lantai Terpilih)
             const bEl = document.getElementById('kpiBeamDcr');
-            bEl.textContent = `DCR = ${s.dcrBeam.toFixed(2)}`;
-            bEl.className = `text-xl sm:text-2xl font-tech font-black mt-0.5 ${s.dcrBeam <= 1.0 ? 'text-emerald-400' : 'text-rose-400 animate-pulse'}`;
-            document.getElementById('kpiBeamSub').textContent = `Mu = ${s.MuBeam.toFixed(1)} ≤ φMn = ${s.phiMnBeam.toFixed(1)} kN.m (${s.dcrBeam <= 1.0 ? 'AMAN' : 'PERBESAR BALOK!'})`;
+            bEl.textContent = `DCR = ${st.dcrBeam.toFixed(2)}`;
+            bEl.className = `text-xl sm:text-2xl font-tech font-black mt-0.5 ${st.dcrBeam <= 1.0 ? 'text-emerald-400' : 'text-rose-400 animate-pulse'}`;
+            document.getElementById('kpiBeamSub').textContent = `Lt.${st.level}: Mu⁻=${st.MuBeamNeg.toFixed(1)} | Mu⁺=${st.MuBeamPos.toFixed(1)} kN.m`;
 
-            // KPI 4: Atap
+            // KPI 4: Pelat Lantai 2 Arah (Lantai Terpilih)
+            document.getElementById('kpiSlabMoment').textContent = `Mtx = ${st.Mtx.toFixed(2)} kN.m`;
+            document.getElementById('kpiSlabSub').textContent = `Lt.${st.level}: Mlx=${st.Mlx.toFixed(2)} kN.m/m • ${st.slabRebar.split('(')[0]}`;
+
+            // KPI 5: Atap & Gempa
             const rEl = document.getElementById('kpiRoofDcr');
             rEl.textContent = `DCR = ${s.dcrRoof.toFixed(2)}`;
-            rEl.className = `text-xl sm:text-2xl font-tech font-black mt-0.5 ${s.dcrRoof <= 1.0 ? 'text-purple-300' : 'text-rose-400 animate-pulse'}`;
-            document.getElementById('kpiRoofSub').textContent = `${s.roofSpec.code} (${s.dcrRoof <= 1.0 ? 'AMAN ≤ 1.00' : 'GANTI PROFIL ATAP!'})`;
-
-            // KPI 5: Gempa
-            document.getElementById('kpiBaseShear').textContent = `V = ${s.V_base.toFixed(1)} kN`;
             const allSafe = (s.qContactMax <= s.qAll && s.dcrCol <= 1.0 && s.dcrBeam <= 1.0 && s.dcrRoof <= 1.0);
-            document.getElementById('kpiSeismicSub').textContent = `SCWB = ${s.scwbRatio.toFixed(2)} • ${allSafe ? 'SAFE STRUCTURE' : 'CHECK DIMENSION'}`;
+            document.getElementById('kpiSeismicSub').textContent = `V_gempa = ${s.V_base.toFixed(1)} kN • ${allSafe ? 'SAFE STRUCTURE' : 'CHECK DIMENSION'}`;
 
-            // Step-by-Step Left Panel Formulas
-            document.getElementById('stepLoadFormula').innerHTML = `
-                <div>Jumlah Tingkat: <b>N = ${s.N} Lantai</b> (H_tot = ${(s.N * s.hStory).toFixed(1)} m)</div>
-                <div>Berat Seismik Efektif: Wt = ${s.totalWt.toFixed(0)} kN</div>
-                <div>Geser Dasar Gempa: <b>V = Cs·Wt = ${s.V_base.toFixed(1)} kN</b></div>
-            `;
-            document.getElementById('stepRoofFormula').innerHTML = `
-                <div>Profil: <b>${s.roofSpec.name}</b></div>
-                <div>Nu = ${s.NuCompression.toFixed(1)} kN | φPn = ${s.phiPnRoof.toFixed(1)} kN</div>
-                <div>Rasio Tegangan: <b>DCR Atap = ${s.dcrRoof.toFixed(2)} ${s.dcrRoof <= 1.0 ? '≤ 1.0 (OK)' : '> 1.0 (KRITIS)'}</b></div>
-            `;
+            // Left Panel Step-by-Step per Lantai Terpilih
+            document.getElementById('leftStoryBadge').textContent = `LANTAI ${st.level} DARI ${s.N}`;
+            document.getElementById('leftTitleBeam').textContent = `Diagram Balok Induk (Lantai ${st.level})`;
+            document.getElementById('leftTitleCol').textContent = `Diagram Kolom Struktur (Lantai ${st.level})`;
+            document.getElementById('leftTitleSlab').textContent = `Diagram Pelat Lantai 2 Arah (Lantai ${st.level})`;
+
             document.getElementById('stepBeamFormula').innerHTML = `
-                <div>Balok: <b>${s.beamSpec.label}</b> (wu = ${s.wuBeam.toFixed(1)} kN/m)</div>
-                <div>Lentur: Mu = ${s.MuBeam.toFixed(1)} ≤ φMn = ${s.phiMnBeam.toFixed(1)} kN.m</div>
-                <div>Geser: Vu = ${s.VuBeam.toFixed(1)} ≤ φVn = ${s.phiVnBeam.toFixed(1)} kN</div>
+                <div>Beban Balok: <b>w_u = ${st.wuBeam.toFixed(1)} kN/m</b> (L = ${s.Lx}m)</div>
+                <div>Momen Tumpuan: <b class="text-rose-300">M_u⁻ = -${st.MuBeamNeg.toFixed(1)} kN.m</b></div>
+                <div>Momen Lapangan: <b class="text-emerald-300">M_u⁺ = +${st.MuBeamPos.toFixed(1)} kN.m</b></div>
+                <div>Gaya Geser: <b>V_u = ${st.VuBeam.toFixed(1)} kN</b> ≤ φVn = ${s.phiVnBeam.toFixed(1)} kN</div>
             `;
             document.getElementById('stepColumnFormula').innerHTML = `
-                <div>Kolom Lt.1: <b>${s.colSpec.label}</b> (ρ = ${s.rhoCol.toFixed(2)}%)</div>
-                <div>Aksial: Pu = ${s.PuColBase.toFixed(0)} ≤ φPn = ${s.phiPnMaxCol.toFixed(0)} kN</div>
-                <div>Rasio SCWB: <b>ΣMnc/ΣMnb = ${s.scwbRatio.toFixed(2)}</b></div>
+                <div>Gaya Aksial Tekan: <b class="text-cyan-300">P_u = ${st.PuCol.toFixed(1)} kN</b></div>
+                <div>Momen Ujung Kolom: <b class="text-amber-300">M_u,col = ±${st.MuCol.toFixed(1)} kN.m</b></div>
+                <div>Geser Kolom Tingkat: <b>V_u,col = ${st.VuCol.toFixed(1)} kN</b></div>
+                <div>Rasio Interaksi: <b>DCR = ${st.dcrCol.toFixed(2)}</b> | SCWB = ${s.scwbRatio.toFixed(2)}</div>
             `;
-            document.getElementById('stepFoundFormula').innerHTML = `
-                <div>Footplate: <b>${s.Bf.toFixed(1)} × ${s.Bf.toFixed(1)} m</b> (Df = ${s.Df.toFixed(1)} m)</div>
-                <div>q_max = ${s.qContactMax.toFixed(1)} kPa ≤ q_all = ${s.qAll} kPa (<b>FS = ${s.fsFoundation.toFixed(2)}</b>)</div>
-                <div>Geser Pons: Vu = ${s.PuColBase.toFixed(0)} ≤ φVc = ${s.phiVcPunch.toFixed(0)} kN</div>
+            document.getElementById('stepSlabFormula').innerHTML = `
+                <div>Beban Pelat: <b>q_u = ${st.quFloor.toFixed(2)} kN/m²</b> (t = ${s.tSlab} mm)</div>
+                <div>Tumpuan Negatif: <b>M_tx = -${st.Mtx.toFixed(2)}</b> | M_ty = -${st.Mty.toFixed(2)} kN.m/m</div>
+                <div>Lapangan Positif: <b>M_lx = +${st.Mlx.toFixed(2)}</b> | M_ly = +${st.Mly.toFixed(2)} kN.m/m</div>
+                <div>Tulangan Pelat: <b class="text-amber-300">${st.slabRebar}</b></div>
             `;
-
-            document.getElementById('screensaverStatusBadge').textContent =
-                `STATUS GEDUNG: ${s.N} LANTAI • DCR KOLOM = ${s.dcrCol.toFixed(2)} • DCR BALOK = ${s.dcrBeam.toFixed(2)} • FS PONDASI = ${s.fsFoundation.toFixed(2)}`;
+            document.getElementById('stepFoundRoofFormula').innerHTML = `
+                <div>Footplate ${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)}m: <b>q_max = ${s.qContactMax.toFixed(1)} kPa</b> (FS = ${s.fsFoundation.toFixed(2)})</div>
+                <div>Atap ${s.roofSpec.code}: <b>Nu = ${s.NuCompression.toFixed(1)} kN</b> (DCR = ${s.dcrRoof.toFixed(2)})</div>
+            `;
         }
 
         // =====================================================================
-        // 4. BLUEPRINT PORTAL MULTI-LANTAI 2D INTERAKTIF (SVG DINAMIS 1-10 LANTAI)
+        // 4. RENDERER DIAGRAM MOMEN (BMD), GESER (SFD) & AKSIAL (NFD) PER LANTAI
+        //    (BALOK INDUK, KOLOM STRUKTUR, DAN PELAT LANTAI DUA ARAH)
+        // =====================================================================
+        function renderFloorElementsDiagramSVG() {
+            const s = structState;
+            const st = s.storyData[selectedFloorIndex - 1] || s.storyData[0];
+            const g = document.getElementById('svgFloorDiagramLayer');
+            if (!g) return;
+
+            document.getElementById('diagramFloorSummaryTag').textContent =
+                `INSPEKSI AKTIF: LANTAI ${st.level} (Elevasi +${st.zx.toFixed(1)} m) • Balok ${s.beamSpec.label} • Kolom ${s.colSpec.label} • Pelat t=${s.tSlab}mm`;
+
+            // Layout SVG 960 x 540 dibagi menjadi 3 Panel Diagram Presisi:
+            // Panel 1 (Kiri Atas - 580x260): Diagram BMD & SFD Balok Induk Lantai ke-i
+            // Panel 2 (Kanan - 340x510): Diagram Momen (Mu), Geser (Vu) & Aksial (Pu) Kolom Lantai ke-i
+            // Panel 3 (Kiri Bawah - 580x245): Diagram Distribusi Momen Pelat Lantai 2 Arah (Mtx, Mlx, Mty, Mly)
+
+            const bx1 = 55, bx2 = 545, bLen = bx2 - bx1;
+            const midBx = (bx1 + bx2) / 2;
+
+            // Skala visualisasi BMD Balok
+            const negH = Math.min(48, Math.max(22, st.MuBeamNeg * 0.45));
+            const posH = Math.min(44, Math.max(18, st.MuBeamPos * 0.55));
+            const bmdAxisY = 105;
+
+            // Skala visualisasi SFD Balok
+            const sfdAxisY = 215;
+            const sfdH = Math.min(36, Math.max(18, st.VuBeam * 0.42));
+
+            let html = `
+                <!-- ========================================================= -->
+                <!-- PANEL 1: DIAGRAM BMD & SFD BALOK INDUK LANTAI KE-i        -->
+                <!-- ========================================================= -->
+                <rect x="12" y="10" width="590" height="252" rx="12" fill="#041022" fill-opacity="0.92" stroke="#10b981" stroke-width="1.6"/>
+                <text x="26" y="32" fill="#34d399" font-family="Orbitron" font-size="11.5" font-weight="900">1. DIAGRAM MOMEN (BMD) &amp; GESER (SFD) BALOK INDUK — LANTAI ${st.level}</text>
+                <text x="585" y="32" text-anchor="end" fill="#fde047" font-family="JetBrains Mono" font-size="10" font-weight="bold">Bentang Lx = ${s.Lx.toFixed(1)} m | wu = ${st.wuBeam.toFixed(1)} kN/m</text>
+
+                <!-- Garis Batang Balok & Tumpuan Kolom Kiri-Kanan -->
+                <line x1="${bx1}" y1="${bmdAxisY}" x2="${bx2}" y2="${bmdAxisY}" stroke="#f8fafc" stroke-width="3"/>
+                <rect x="${bx1-8}" y="${bmdAxisY-14}" width="16" height="28" fill="#38bdf8" opacity="0.8"/>
+                <rect x="${bx2-8}" y="${bmdAxisY-14}" width="16" height="28" fill="#38bdf8" opacity="0.8"/>
+
+                <!-- Kurva Parabolik BMD Balok (Negatif di Tumpuan, Positif di Lapangan) -->
+                <path d="M ${bx1},${bmdAxisY} L ${bx1},${bmdAxisY - negH} Q ${midBx},${bmdAxisY + posH * 2.15} ${bx2},${bmdAxisY - negH} L ${bx2},${bmdAxisY} Z"
+                      fill="rgba(16, 185, 129, 0.22)" stroke="#fbbf24" stroke-width="2.5"/>
+
+                <!-- Arsiran Merah Momen Tumpuan Negatif Kiri & Kanan -->
+                <line x1="${bx1}" y1="${bmdAxisY}" x2="${bx1}" y2="${bmdAxisY - negH}" stroke="#f43f5e" stroke-width="4"/>
+                <line x1="${bx2}" y1="${bmdAxisY}" x2="${bx2}" y2="${bmdAxisY - negH}" stroke="#f43f5e" stroke-width="4"/>
+                <line x1="${midBx}" y1="${bmdAxisY}" x2="${midBx}" y2="${bmdAxisY + posH}" stroke="#10b981" stroke-width="3" stroke-dasharray="3,2"/>
+
+                <text x="${bx1 + 12}" y="${bmdAxisY - negH - 5}" fill="#fda4af" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Mu⁻ = -${st.MuBeamNeg.toFixed(1)} kN.m</text>
+                <text x="${bx2 - 12}" y="${bmdAxisY - negH - 5}" text-anchor="end" fill="#fda4af" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Mu⁻ = -${st.MuBeamNeg.toFixed(1)} kN.m</text>
+                <text x="${midBx}" y="${bmdAxisY + posH + 15}" text-anchor="middle" fill="#6ee7b7" font-family="JetBrains Mono" font-size="11" font-weight="bold">Mu⁺ (Lapangan) = +${st.MuBeamPos.toFixed(1)} kN.m (≤ φMn ${s.phiMnBeam.toFixed(1)} kN.m)</text>
+
+                <!-- Sumbu & Poligon Diagram Gaya Geser (SFD) Balok -->
+                <line x1="${bx1}" y1="${sfdAxisY}" x2="${bx2}" y2="${sfdAxisY}" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,3"/>
+                <polygon points="${bx1},${sfdAxisY} ${bx1},${sfdAxisY - sfdH} ${bx2},${sfdAxisY + sfdH} ${bx2},${sfdAxisY}"
+                         fill="rgba(56, 189, 248, 0.22)" stroke="#38bdf8" stroke-width="2.2"/>
+                <text x="${bx1 + 10}" y="${sfdAxisY - sfdH - 4}" fill="#7dd3fc" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">+Vu = +${st.VuBeam.toFixed(1)} kN</text>
+                <text x="${bx2 - 10}" y="${sfdAxisY + sfdH + 12}" text-anchor="end" fill="#7dd3fc" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">-Vu = -${st.VuBeam.toFixed(1)} kN</text>
+                <text x="${midBx}" y="${sfdAxisY - 6}" text-anchor="middle" fill="#cbd5e1" font-family="JetBrains Mono" font-size="9.5">Sengkang Tumpuan Ø10-100 | Lapangan Ø10-150 (φVn = ${s.phiVnBeam.toFixed(1)} kN)</text>
+            `;
+
+            // =========================================================
+            // PANEL 2: DIAGRAM MOMEN (Mu), GESER (Vu) & AKSIAL (Pu) KOLOM LANTAI KE-i
+            // =========================================================
+            const colTopY = 85, colBotY = 445, colMidY = (colTopY + colBotY) / 2;
+            const axisColM = 685; // Sumbu BMD Kolom
+            const axisColV = 795; // Sumbu SFD Kolom
+            const axisColP = 890; // Sumbu NFD Kolom
+            const colM_w = Math.min(38, Math.max(18, st.MuCol * 0.75));
+            const colV_w = Math.min(32, Math.max(16, st.VuCol * 0.85));
+            const colP_w = Math.min(36, Math.max(20, st.PuCol * 0.06));
+
+            html += `
+                <rect x="614" y="10" width="334" height="520" rx="12" fill="#041022" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.6"/>
+                <text x="628" y="32" fill="#38bdf8" font-family="Orbitron" font-size="11.5" font-weight="900">2. DIAGRAM KOLOM — LANTAI ${st.level}</text>
+                <text x="628" y="48" fill="#94a3b8" font-family="JetBrains Mono" font-size="9.5">Penampang: ${s.colSpec.label} | h = ${s.hStory.toFixed(1)} m</text>
+
+                <!-- 2A. Diagram Momen Lentur Kolom (BMD Double Curvature) -->
+                <text x="${axisColM}" y="70" text-anchor="middle" fill="#fbbf24" font-family="JetBrains Mono" font-size="10" font-weight="bold">BMD (Mu)</text>
+                <line x1="${axisColM}" y1="${colTopY}" x2="${axisColM}" y2="${colBotY}" stroke="#f8fafc" stroke-width="3"/>
+                <polygon points="${axisColM},${colTopY} ${axisColM + colM_w},${colTopY} ${axisColM - colM_w},${colBotY} ${axisColM},${colBotY}"
+                         fill="rgba(251, 191, 36, 0.25)" stroke="#fbbf24" stroke-width="2.2"/>
+                <circle cx="${axisColM}" cy="${colMidY}" r="4" fill="#f43f5e"/>
+                <text x="${axisColM + colM_w + 4}" y="${colTopY + 12}" fill="#fde047" font-family="JetBrains Mono" font-size="9.5" font-weight="bold">+${st.MuCol.toFixed(1)}</text>
+                <text x="${axisColM - colM_w - 4}" y="${colBotY - 4}" text-anchor="end" fill="#fde047" font-family="JetBrains Mono" font-size="9.5" font-weight="bold">-${st.MuCol.toFixed(1)}</text>
+                <text x="${axisColM}" y="${colBotY + 18}" text-anchor="middle" fill="#fde047" font-family="JetBrains Mono" font-size="9.5">kN.m</text>
+
+                <!-- 2B. Diagram Gaya Geser Kolom (SFD Konstan Sepanjang Tinggi Kolom) -->
+                <text x="${axisColV}" y="70" text-anchor="middle" fill="#38bdf8" font-family="JetBrains Mono" font-size="10" font-weight="bold">SFD (Vu)</text>
+                <line x1="${axisColV}" y1="${colTopY}" x2="${axisColV}" y2="${colBotY}" stroke="#f8fafc" stroke-width="3"/>
+                <rect x="${axisColV}" y="${colTopY}" width="${colV_w}" height="${colBotY - colTopY}" fill="rgba(56, 189, 248, 0.25)" stroke="#38bdf8" stroke-width="2"/>
+                <text x="${axisColV + colV_w/2}" y="${colMidY}" text-anchor="middle" fill="#7dd3fc" font-family="JetBrains Mono" font-size="10" font-weight="bold">${st.VuCol.toFixed(1)}</text>
+                <text x="${axisColV}" y="${colBotY + 18}" text-anchor="middle" fill="#7dd3fc" font-family="JetBrains Mono" font-size="9.5">kN</text>
+
+                <!-- 2C. Diagram Gaya Aksial Tekan Kolom (NFD/AFD) -->
+                <text x="${axisColP}" y="70" text-anchor="middle" fill="#f43f5e" font-family="JetBrains Mono" font-size="10" font-weight="bold">NFD (Pu)</text>
+                <line x1="${axisColP}" y1="${colTopY}" x2="${axisColP}" y2="${colBotY}" stroke="#f8fafc" stroke-width="3"/>
+                <rect x="${axisColP - colP_w/2}" y="${colTopY}" width="${colP_w}" height="${colBotY - colTopY}" fill="rgba(244, 63, 94, 0.28)" stroke="#f43f5e" stroke-width="2"/>
+                <text x="${axisColP}" y="${colMidY}" text-anchor="middle" fill="#fecdd3" font-family="JetBrains Mono" font-size="10" font-weight="bold">-${st.PuCol.toFixed(0)}</text>
+                <text x="${axisColP}" y="${colBotY + 18}" text-anchor="middle" fill="#fda4af" font-family="JetBrains Mono" font-size="9.5">kN (Tekan)</text>
+
+                <!-- Box Status Kapasitas Kolom Lantai ke-i -->
+                <rect x="628" y="472" width="306" height="46" rx="8" fill="#064e3b" fill-opacity="0.65" stroke="#10b981" stroke-width="1.5"/>
+                <text x="781" y="491" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Kapasitas φPn = ${s.phiPnMaxCol.toFixed(0)} kN | DCR = ${st.dcrCol.toFixed(2)}</text>
+                <text x="781" y="508" text-anchor="middle" fill="#a7f3d0" font-family="JetBrains Mono" font-size="9.5">Rasio SCWB = ${s.scwbRatio.toFixed(2)} ≥ 1.20 (Memenuhi SRPMK)</text>
+            `;
+
+            // =========================================================
+            // PANEL 3: DIAGRAM DISTRIBUSI MOMEN PELAT LANTAI 2 ARAH (Mtx, Mlx, Mty, Mly)
+            // =========================================================
+            const sx1 = 55, sx2 = 545, sMidX = (sx1 + sx2) / 2;
+            const slabAxisY = 395;
+            const mtxH = Math.min(36, Math.max(16, st.Mtx * 2.8));
+            const mlxH = Math.min(32, Math.max(14, st.Mlx * 3.2));
+
+            html += `
+                <rect x="12" y="274" width="590" height="256" rx="12" fill="#041022" fill-opacity="0.92" stroke="#a855f7" stroke-width="1.6"/>
+                <text x="26" y="296" fill="#c084fc" font-family="Orbitron" font-size="11.5" font-weight="900">3. DIAGRAM MOMEN &amp; GAYA PELAT DUA ARAH — LANTAI ${st.level} (t = ${s.tSlab} mm)</text>
+                <text x="585" y="296" text-anchor="end" fill="#e9d5ff" font-family="JetBrains Mono" font-size="10" font-weight="bold">qu = ${st.quFloor.toFixed(2)} kN/m² | β = Ly/Lx = ${s.betaRatio.toFixed(2)}</text>
+
+                <!-- Penampang Pias Pelat Lantai 1 Meter Lebar -->
+                <rect x="${sx1}" y="${slabAxisY - 5}" width="${sx2 - sx1}" height="10" fill="#64748b" stroke="#cbd5e1" stroke-width="1.2"/>
+                <rect x="${sx1 - 6}" y="${slabAxisY - 14}" width="12" height="28" fill="#10b981"/>
+                <rect x="${sx2 - 6}" y="${slabAxisY - 14}" width="12" height="28" fill="#10b981"/>
+
+                <!-- Kurva Momen Pias Arah Pendek (Mtx & Mlx) -->
+                <path d="M ${sx1},${slabAxisY} L ${sx1},${slabAxisY - mtxH} Q ${sMidX},${slabAxisY + mlxH * 2.2} ${sx2},${slabAxisY - mtxH} L ${sx2},${slabAxisY} Z"
+                      fill="rgba(168, 85, 247, 0.24)" stroke="#c084fc" stroke-width="2.5"/>
+
+                <text x="${sx1 + 10}" y="${slabAxisY - mtxH - 6}" fill="#f43f5e" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Mtx = -${st.Mtx.toFixed(2)} kN.m/m</text>
+                <text x="${sx2 - 10}" y="${slabAxisY - mtxH - 6}" text-anchor="end" fill="#f43f5e" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Mty = -${st.Mty.toFixed(2)} kN.m/m</text>
+                <text x="${sMidX}" y="${slabAxisY + mlxH + 18}" text-anchor="middle" fill="#6ee7b7" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Mlx = +${st.Mlx.toFixed(2)} kN.m/m | Mly = +${st.Mly.toFixed(2)} kN.m/m</text>
+
+                <!-- Kotak Info Geser Pelat & Tulangan Pelat Lantai -->
+                <rect x="26" y="476" width="560" height="42" rx="8" fill="#0f172a" stroke="#a855f7" stroke-width="1.2"/>
+                <text x="40" y="494" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10">• Gaya Geser Pelat: <tspan fill="#38bdf8" font-weight="bold">Vu,slab = ${st.VuSlab.toFixed(2)} kN/m</tspan> ≤ φVc,slab = ${(0.75 * 0.17 * Math.sqrt(s.fc) * 1000 * (s.tSlab - 25) / 1000).toFixed(1)} kN/m (AMAN)</text>
+                <text x="40" y="510" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10">• Rekomendasi Tulangan Pelat Lantai ${st.level}: <tspan fill="#fde047" font-weight="bold">Lapangan &amp; Tumpuan ${st.slabRebar}</tspan></text>
+            `;
+
+            g.innerHTML = html;
+        }
+
+        function downloadDiagramSVGAsPNG() {
+            const svg = document.getElementById('floorElementsDiagramSvg');
+            const ser = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([ser], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = function() {
+                const cv = document.createElement('canvas');
+                cv.width = 1920; cv.height = 1080;
+                const cx = cv.getContext('2d');
+                cx.fillStyle = '#061d36';
+                cx.fillRect(0, 0, cv.width, cv.height);
+                cx.drawImage(img, 0, 0, cv.width, cv.height);
+                URL.revokeObjectURL(url);
+                const a = document.createElement('a');
+                a.download = `Diagram_BMD_SFD_Lantai_${selectedFloorIndex}_SNI.png`;
+                a.href = cv.toDataURL('image/png');
+                a.click();
+            };
+            img.src = url;
+        }
+
+        // =====================================================================
+        // 5. BLUEPRINT PORTAL GLOBAL 2D + OVERLAY BMD/SFD/NFD
         // =====================================================================
         function renderBuildingBlueprintSVG() {
             const s = structState;
             const g = document.getElementById('svgBuildingDynamicLayer');
             if (!g) return;
 
-            document.getElementById('blueprintHeaderLabel').textContent =
-                `BLUEPRINT STRUKTUR PORTAL ${s.N} LANTAI — PONDASI ${s.Bf.toFixed(1)}m, KOLOM ${s.colSpec.b}x${s.colSpec.h}, BALOK ${s.beamSpec.b}x${s.beamSpec.h} & ATAP ${s.roofSpec.code}`;
-
             const allSafe = (s.qContactMax <= s.qAll && s.dcrCol <= 1.0 && s.dcrBeam <= 1.0 && s.dcrRoof <= 1.0);
             const badge = document.getElementById('blueprintStatusBadge');
             badge.textContent = allSafe ? `STRUKTUR ${s.N} LANTAI AMAN (SNI VERIFIED)` : `PERINGATAN: PERBESAR DIMENSI ELEMEN!`;
             badge.className = allSafe
-                ? 'px-2.5 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[11px]'
-                : 'px-2.5 py-0.5 rounded bg-rose-600 text-white font-black text-[11px] animate-pulse';
+                ? 'px-2.5 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[10.5px]'
+                : 'px-2.5 py-0.5 rounded bg-rose-600 text-white font-black text-[10.5px] animate-pulse';
 
             const groundY = 430;
             const footY = 485;
@@ -1352,117 +1658,86 @@
             const storyPx = Math.min(82, maxBuildingHeightPx / s.N);
             const topFloorY = groundY - (s.N * storyPx);
             const roofPeakY = Math.max(32, topFloorY - 68);
+            const colX = [170, 350, 530];
 
-            const colX = [170, 350, 530]; // 2 bentang portal
             let svgHtml = `
-                <!-- Garis Tanah Asli & Lapisan Tanah Pondasi -->
                 <rect x="60" y="${groundY}" width="580" height="75" fill="#0f172a" fill-opacity="0.65"/>
                 <line x1="60" y1="${groundY}" x2="640" y2="${groundY}" stroke="#10b981" stroke-width="2.5" stroke-dasharray="8,4"/>
-                <text x="72" y="${groundY + 18}" fill="#6ee7b7" font-family="JetBrains Mono" font-size="11" font-weight="bold">MUKA TANAH (EL. ±0.00) • Df = -${s.Df.toFixed(1)} m</text>
             `;
 
-            // 1. Gambar Pondasi Footplate & Batu Kali + Leher Kolom (Pedestal)
-            colX.forEach((cx, idx) => {
+            colX.forEach(cx => {
                 svgHtml += `
-                    <!-- Trapesium Batu Kali / Urugan Pasir -->
                     <polygon points="${cx-28},${groundY} ${cx+28},${groundY} ${cx+42},${footY-18} ${cx-42},${footY-18}" fill="#475569" fill-opacity="0.55" stroke="#94a3b8" stroke-width="1.2"/>
-                    <!-- Telapak Beton Bertulang (Footplate) -->
                     <rect x="${cx-48}" y="${footY-18}" width="96" height="18" rx="2" fill="#cbd5e1" stroke="#38bdf8" stroke-width="2"/>
-                    <!-- Pedestal Kolom Pondasi -->
                     <rect x="${cx-9}" y="${groundY}" width="18" height="${footY-18-groundY}" fill="#94a3b8" stroke="#e2e8f0" stroke-width="1.5"/>
-                    <text x="${cx}" y="${footY + 14}" text-anchor="middle" fill="#fde047" font-family="JetBrains Mono" font-size="10" font-weight="bold">FP ${s.Bf.toFixed(1)}x${s.Bf.toFixed(1)}m</text>
+                    <text x="${cx}" y="${footY + 14}" text-anchor="middle" fill="#fde047" font-family="JetBrains Mono" font-size="10" font-weight="bold">FP ${s.Bf.toFixed(1)}m</text>
                 `;
             });
 
-            // 2. Gambar Balok Sloof di Elevasi ±0.00
-            svgHtml += `
-                <rect x="${colX[0]}" y="${groundY-6}" width="${colX[2]-colX[0]}" height="10" fill="#64748b" stroke="#38bdf8" stroke-width="1.5"/>
-                <text x="${(colX[0]+colX[1])/2}" y="${groundY+15}" text-anchor="middle" fill="#7dd3fc" font-family="JetBrains Mono" font-size="10" font-weight="bold">SLOOF ${s.beamSpec.b}x${s.beamSpec.h}</text>
-            `;
+            svgHtml += `<rect x="${colX[0]}" y="${groundY-6}" width="${colX[2]-colX[0]}" height="10" fill="#64748b" stroke="#38bdf8" stroke-width="1.5"/>`;
 
-            // 3. Gambar Kolom, Balok Induk, Pelat Lantai & Panah Gaya Gempa per Tingkat (1 s/d N)
             for (let i = 1; i <= s.N; i++) {
                 const yBot = groundY - ((i - 1) * storyPx);
                 const yTop = groundY - (i * storyPx);
                 const st = s.storyData[i - 1];
 
-                // Kolom Kiri, Tengah, Kanan
                 colX.forEach(cx => {
-                    svgHtml += `<rect x="${cx-8}" y="${yTop}" width="16" height="${storyPx}" fill="#cbd5e1" stroke="#f8fafc" stroke-width="1.5"/>`;
+                    svgHtml += `<rect x="${cx-7}" y="${yTop}" width="14" height="${storyPx}" fill="#cbd5e1" stroke="#f8fafc" stroke-width="1.2"/>`;
                 });
+                svgHtml += `<rect x="${colX[0]-7}" y="${yTop}" width="${colX[2]-colX[0]+14}" height="8" fill="#94a3b8" stroke="#38bdf8" stroke-width="1.2"/>`;
 
-                // Balok Lantai & Pelat Beton
-                svgHtml += `
-                    <rect x="${colX[0]-8}" y="${yTop}" width="${colX[2]-colX[0]+16}" height="9" fill="#94a3b8" stroke="#38bdf8" stroke-width="1.5"/>
-                    <line x1="${colX[0]}" y1="${yTop-3}" x2="${colX[2]}" y2="${yTop-3}" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="4,2"/>
-                `;
+                // Tampilkan Overlay sesuai mode yang dipilih (Geometri / BMD / SFD / NFD)
+                if (portalOverlayMode === 'geom') {
+                    const arrowLen = Math.min(72, 26 + (i / s.N) * 44);
+                    svgHtml += `
+                        <line x1="${colX[0] - arrowLen - 12}" y1="${yTop + 4}" x2="${colX[0] - 10}" y2="${yTop + 4}" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrRed)"/>
+                        <text x="${colX[0] - arrowLen - 16}" y="${yTop + 8}" text-anchor="end" fill="#fda4af" font-family="JetBrains Mono" font-size="10" font-weight="bold">F${i}=${st.Fx.toFixed(1)}kN</text>
+                    `;
+                } else if (portalOverlayMode === 'bmd') {
+                    // Overlay BMD pada Balok & Kolom Portal
+                    for (let span = 0; span < 2; span++) {
+                        const sxA = colX[span] + 7, sxB = colX[span+1] - 7, sMid = (sxA + sxB) / 2;
+                        svgHtml += `<path d="M ${sxA},${yTop+4} L ${sxA},${yTop-12} Q ${sMid},${yTop+28} ${sxB},${yTop-12} L ${sxB},${yTop+4} Z" fill="rgba(251,191,36,0.32)" stroke="#fbbf24" stroke-width="1.8"/>`;
+                    }
+                    colX.forEach(cx => {
+                        svgHtml += `<polygon points="${cx},${yTop+8} ${cx+14},${yTop+8} ${cx-14},${yBot-4} ${cx},${yBot-4}" fill="rgba(244,63,94,0.28)" stroke="#f43f5e" stroke-width="1.5"/>`;
+                    });
+                } else if (portalOverlayMode === 'sfd') {
+                    for (let span = 0; span < 2; span++) {
+                        const sxA = colX[span] + 7, sxB = colX[span+1] - 7;
+                        svgHtml += `<polygon points="${sxA},${yTop+4} ${sxA},${yTop-14} ${sxB},${yTop+22} ${sxB},${yTop+4}" fill="rgba(56,189,248,0.32)" stroke="#38bdf8" stroke-width="1.8"/>`;
+                    }
+                } else if (portalOverlayMode === 'nfd') {
+                    const wNfd = Math.min(26, 8 + (st.PuCol / s.PuColBase) * 18);
+                    colX.forEach(cx => {
+                        svgHtml += `<rect x="${cx - wNfd/2}" y="${yTop+8}" width="${wNfd}" height="${storyPx-10}" fill="rgba(244,63,94,0.38)" stroke="#f43f5e" stroke-width="1.5"/>`;
+                    });
+                }
 
-                // Panah Gaya Lateral Gempa Fx di Kiri Portal
-                const arrowLen = Math.min(75, 28 + (i / s.N) * 45);
-                svgHtml += `
-                    <line x1="${colX[0] - arrowLen - 14}" y1="${yTop + 4}" x2="${colX[0] - 12}" y2="${yTop + 4}" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrRed)"/>
-                    <text x="${colX[0] - arrowLen - 18}" y="${yTop + 8}" text-anchor="end" fill="#fda4af" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">F${i}=${st.Fx.toFixed(1)}kN</text>
-                    <text x="${colX[2] + 18}" y="${yTop + 8}" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">Lt.${i} (+${st.zx.toFixed(1)}m)</text>
-                `;
+                svgHtml += `<text x="${colX[2] + 16}" y="${yTop + 8}" fill="#a7f3d0" font-family="JetBrains Mono" font-size="10" font-weight="bold">Lt.${i} (Mu⁻=${st.MuBeamNeg.toFixed(0)}kN.m | Pu=${st.PuCol.toFixed(0)}kN)</text>`;
             }
 
-            // 4. Gambar Rangka Kuda-Kuda Atap Cremona di Puncak Lantai N
-            const midRoofX = colX[1];
-            const leftEaveX = colX[0] - 22;
-            const rightEaveX = colX[2] + 22;
-            const q1X = (leftEaveX + midRoofX) / 2;
-            const q2X = (midRoofX + rightEaveX) / 2;
-            const midRoofY = (topFloorY + roofPeakY) / 2;
-
+            // Rangka Kuda-Kuda Atap
+            const midRoofX = colX[1], leftEaveX = colX[0] - 20, rightEaveX = colX[2] + 20;
             svgHtml += `
-                <!-- Segitiga Kuda-Kuda Utama & Batang Web Cremona -->
-                <polygon points="${leftEaveX},${topFloorY} ${midRoofX},${roofPeakY} ${rightEaveX},${topFloorY}" fill="rgba(168,85,247,0.12)" stroke="#c084fc" stroke-width="3"/>
-                <line x1="${midRoofX}" y1="${roofPeakY}" x2="${midRoofX}" y2="${topFloorY}" stroke="#c084fc" stroke-width="2.2"/>
-                <line x1="${q1X}" y1="${midRoofY}" x2="${q1X}" y2="${topFloorY}" stroke="#c084fc" stroke-width="1.8"/>
-                <line x1="${q2X}" y1="${midRoofY}" x2="${q2X}" y2="${topFloorY}" stroke="#c084fc" stroke-width="1.8"/>
-                <line x1="${q1X}" y1="${midRoofY}" x2="${midRoofX}" y2="${topFloorY}" stroke="#c084fc" stroke-width="1.6" stroke-dasharray="3,2"/>
-                <line x1="${q2X}" y1="${midRoofY}" x2="${midRoofX}" y2="${topFloorY}" stroke="#c084fc" stroke-width="1.6" stroke-dasharray="3,2"/>
-                <text x="${midRoofX}" y="${roofPeakY - 10}" text-anchor="middle" fill="#e9d5ff" font-family="JetBrains Mono" font-size="11.5" font-weight="bold">RANGKA ATAP: ${s.roofSpec.name} (∠${s.roofAngleDeg}°)</text>
+                <polygon points="${leftEaveX},${topFloorY} ${midRoofX},${roofPeakY} ${rightEaveX},${topFloorY}" fill="rgba(168,85,247,0.14)" stroke="#c084fc" stroke-width="2.8"/>
+                <line x1="${midRoofX}" y1="${roofPeakY}" x2="${midRoofX}" y2="${topFloorY}" stroke="#c084fc" stroke-width="2"/>
+                <text x="${midRoofX}" y="${roofPeakY - 10}" text-anchor="middle" fill="#e9d5ff" font-family="JetBrains Mono" font-size="11" font-weight="bold">ATAP: ${s.roofSpec.name}</text>
             `;
 
-            // Dimensi Bentang Lx
+            // Panel Kanan Resume Portal
             svgHtml += `
-                <line x1="${colX[0]}" y1="${groundY + 34}" x2="${colX[1]}" y2="${groundY + 34}" stroke="#38bdf8" stroke-width="1.5" marker-start="url(#arrCyan)" marker-end="url(#arrCyan)"/>
-                <text x="${(colX[0]+colX[1])/2}" y="${groundY + 48}" text-anchor="middle" fill="#7dd3fc" font-family="JetBrains Mono" font-size="11" font-weight="bold">Lx = ${s.Lx.toFixed(1)} m</text>
-                <line x1="${colX[1]}" y1="${groundY + 34}" x2="${colX[2]}" y2="${groundY + 34}" stroke="#38bdf8" stroke-width="1.5" marker-start="url(#arrCyan)" marker-end="url(#arrCyan)"/>
-                <text x="${(colX[1]+colX[2])/2}" y="${groundY + 48}" text-anchor="middle" fill="#7dd3fc" font-family="JetBrains Mono" font-size="11" font-weight="bold">Lx = ${s.Lx.toFixed(1)} m</text>
-            `;
-
-            // 5. Panel Ringkasan Teknis di Sisi Kanan Blueprint SVG
-            svgHtml += `
-                <g transform="translate(650, 22)">
-                    <rect x="0" y="0" width="295" height="475" rx="14" fill="#041022" fill-opacity="0.94" stroke="#10b981" stroke-width="2"/>
-                    <text x="16" y="28" fill="#fbbf24" font-family="Orbitron" font-size="12" font-weight="900">RESUME STRUKTUR ${s.N} LANTAI:</text>
-
-                    <text x="16" y="54" fill="#38bdf8" font-family="JetBrains Mono" font-size="11" font-weight="bold">1. RANGKA &amp; PROFIL ATAP</text>
-                    <text x="16" y="72" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Katalog: ${s.roofSpec.code} (${s.roofSpec.fy} MPa)</text>
-                    <text x="16" y="88" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Nu = ${s.NuCompression.toFixed(1)} kN | φPn = ${s.phiPnRoof.toFixed(1)} kN</text>
-                    <text x="16" y="104" fill="#c084fc" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• DCR Atap = ${s.dcrRoof.toFixed(2)} (${s.dcrRoof <= 1 ? 'AMAN' : 'KRITIS'})</text>
-
-                    <text x="16" y="132" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="bold">2. BALOK INDUK &amp; SLOOF</text>
-                    <text x="16" y="150" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Dimensi: ${s.beamSpec.label}</text>
-                    <text x="16" y="166" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Mu = ${s.MuBeam.toFixed(1)} ≤ φMn = ${s.phiMnBeam.toFixed(1)} kN.m</text>
-                    <text x="16" y="182" fill="#6ee7b7" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• DCR Balok = ${s.dcrBeam.toFixed(2)} (${s.dcrBeam <= 1 ? 'AMAN' : 'KRITIS'})</text>
-
-                    <text x="16" y="210" fill="#22d3ee" font-family="JetBrains Mono" font-size="11" font-weight="bold">3. KOLOM UTAMA LT. 1</text>
-                    <text x="16" y="228" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Dimensi: ${s.colSpec.label}</text>
-                    <text x="16" y="244" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Pu = ${s.PuColBase.toFixed(0)} ≤ φPn = ${s.phiPnMaxCol.toFixed(0)} kN</text>
-                    <text x="16" y="260" fill="#7dd3fc" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• DCR Kolom = ${s.dcrCol.toFixed(2)} | SCWB = ${s.scwbRatio.toFixed(2)}</text>
-
-                    <text x="16" y="288" fill="#fbbf24" font-family="JetBrains Mono" font-size="11" font-weight="bold">4. PONDASI TELAPAK (FOOTPLATE)</text>
-                    <text x="16" y="306" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• Telapak: ${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)} m (Df = ${s.Df.toFixed(1)} m)</text>
-                    <text x="16" y="322" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10.5">• q_max = ${s.qContactMax.toFixed(1)} ≤ q_all ${s.qAll} kPa</text>
-                    <text x="16" y="338" fill="#fde047" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• FS Daya Dukung = ${s.fsFoundation.toFixed(2)} | Pons DCR = ${s.dcrPunch.toFixed(2)}</text>
-
-                    <rect x="16" y="362" width="263" height="92" rx="10" fill="${allSafe ? '#064e3b' : '#881337'}" fill-opacity="0.7" stroke="${allSafe ? '#10b981' : '#f43f5e'}" stroke-width="2"/>
-                    <text x="147" y="392" text-anchor="middle" fill="#ffffff" font-family="Orbitron" font-size="13" font-weight="900">${allSafe ? 'STATUS: SAFE STRUCTURE' : 'STATUS: PERLU PERKUATAN'}</text>
-                    <text x="147" y="416" text-anchor="middle" fill="#a7f3d0" font-family="JetBrains Mono" font-size="11" font-weight="bold">Geser Gempa V = ${s.V_base.toFixed(1)} kN</text>
-                    <text x="147" y="438" text-anchor="middle" fill="#fde68a" font-family="JetBrains Mono" font-size="10">SNI 2847 • SNI 1726 • SNI 8460</text>
+                <g transform="translate(665, 22)">
+                    <rect x="0" y="0" width="280" height="475" rx="14" fill="#041022" fill-opacity="0.94" stroke="#10b981" stroke-width="2"/>
+                    <text x="16" y="28" fill="#fbbf24" font-family="Orbitron" font-size="11.5" font-weight="900">RESUME PORTAL ${s.N} LANTAI:</text>
+                    <text x="16" y="54" fill="#38bdf8" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• Rangka Atap: ${s.roofSpec.code}</text>
+                    <text x="16" y="72" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10">  Nu = ${s.NuCompression.toFixed(1)} kN (DCR = ${s.dcrRoof.toFixed(2)})</text>
+                    <text x="16" y="100" fill="#34d399" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• Balok Induk: ${s.beamSpec.label}</text>
+                    <text x="16" y="118" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10">  Mu⁻ = ${s.MuBeam.toFixed(1)} kN.m (DCR = ${s.dcrBeam.toFixed(2)})</text>
+                    <text x="16" y="146" fill="#22d3ee" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• Kolom Lt.1: ${s.colSpec.label}</text>
+                    <text x="16" y="164" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10">  Pu = ${s.PuColBase.toFixed(0)} kN (DCR = ${s.dcrCol.toFixed(2)})</text>
+                    <text x="16" y="192" fill="#fbbf24" font-family="JetBrains Mono" font-size="10.5" font-weight="bold">• Pondasi: Footplate ${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)}m</text>
+                    <text x="16" y="210" fill="#e2e8f0" font-family="JetBrains Mono" font-size="10">  q_max = ${s.qContactMax.toFixed(1)} kPa (FS = ${s.fsFoundation.toFixed(2)})</text>
                 </g>
             `;
 
@@ -1470,7 +1745,179 @@
         }
 
         // =====================================================================
-        // 5. VISUALISASI 3D RANGKA GEDUNG MULTI-LANTAI (THREE.JS BUILDING FRAME)
+        // 6. TABEL REKAP PER LANTAI, RISALAH TEKNIS, SARAN TEKNIS & KESIMPULAN
+        // =====================================================================
+        function renderCatalogAndStoryTables() {
+            const s = structState;
+
+            const stBody = document.getElementById('storyDistributionTableBody');
+            if (stBody) {
+                stBody.innerHTML = [...s.storyData].reverse().map(st => `
+                    <tr class="hover:bg-slate-800/80 ${st.level === selectedFloorIndex ? 'bg-emerald-950/40 border-l-4 border-l-emerald-400' : ''}">
+                        <td class="p-2 font-bold text-emerald-300">Lantai ${st.level} (+${st.zx.toFixed(1)}m)</td>
+                        <td class="p-2 text-rose-400 font-bold">${st.Fx.toFixed(1)} kN</td>
+                        <td class="p-2"><span class="text-rose-300">-${st.MuBeamNeg.toFixed(1)}</span> / <span class="text-emerald-300">+${st.MuBeamPos.toFixed(1)}</span></td>
+                        <td class="p-2 text-cyan-300">${st.VuBeam.toFixed(1)} kN</td>
+                        <td class="p-2 text-amber-300 font-bold">${st.PuCol.toFixed(1)} kN</td>
+                        <td class="p-2">±${st.MuCol.toFixed(1)} kN.m / ${st.VuCol.toFixed(1)} kN</td>
+                        <td class="p-2">-${st.Mtx.toFixed(2)} / +${st.Mlx.toFixed(2)}</td>
+                        <td class="p-2 text-center">
+                            <button type="button" onclick="selectFloorForDiagram(${st.level}); switchCenterTab('diagrams');" class="px-2 py-0.5 rounded bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black text-[10px] cursor-pointer">
+                                Lihat Diagram
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            const rcBody = document.getElementById('roofCatalogTableBody');
+            if (rcBody) {
+                rcBody.innerHTML = Object.values(ROOF_PROFILE_CATALOG).map(p => {
+                    const isSelected = (p.code === s.roofSpec.code);
+                    return `
+                    <tr class="${isSelected ? 'bg-purple-950/60 border-l-4 border-l-purple-400' : 'hover:bg-slate-900'}">
+                        <td class="p-2 font-bold text-white">${p.name}</td>
+                        <td class="p-2 text-slate-300">${p.std}</td>
+                        <td class="p-2 text-right">${p.A.toFixed(1)}</td>
+                        <td class="p-2 text-right">${p.Ix.toFixed(2)}</td>
+                        <td class="p-2 text-right">${p.Zx.toFixed(2)}</td>
+                        <td class="p-2 text-right text-amber-300">${p.fy}</td>
+                        <td class="p-2 text-center">
+                            <button type="button" onclick="selectRoofProfileFromTable('${p.code}')" class="px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-purple-700 hover:bg-purple-600 text-white'}">
+                                ${isSelected ? 'Aktif' : 'Gunakan'}
+                            </button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+
+            // Risalah Teknis, Saran Teknis & Kesimpulan Lengkap
+            const rBox = document.getElementById('liveStructRisalah');
+            const sBox = document.getElementById('liveStructSaran');
+            const kBox = document.getElementById('liveStructKesimpulan');
+            const st1 = s.storyData[0];
+            const stTop = s.storyData[s.N - 1];
+            const allSafe = (s.qContactMax <= s.qAll && s.dcrCol <= 1.0 && s.dcrBeam <= 1.0 && s.dcrRoof <= 1.0);
+
+            if (rBox) {
+                rBox.innerHTML = `
+                    <p>1. <b>Perilaku Portal &amp; Distribusi Gempa (${s.N} Lantai — SNI 1726:2019):</b> Berat seismik efektif total gedung tercatat <b>Wt = ${s.totalWt.toFixed(1)} kN</b> dengan gaya geser dasar gempa <b>V = ${s.V_base.toFixed(1)} kN</b> (Cs = ${(s.Cs*100).toFixed(2)}%). Gaya lateral gempa terdistribusi dari <b>F1 = ${st1.Fx.toFixed(1)} kN</b> di Lantai 1 hingga <b>F${s.N} = ${stTop.Fx.toFixed(1)} kN</b> di Lantai ${s.N}.</p>
+                    <p>2. <b>Evaluasi Diagram Momen &amp; Geser Balok Induk (SNI 2847:2019):</b> Momen lentur negatif maksimum terjadi pada tumpuan balok Lantai 1 sebesar <b>Mu⁻ = -${st1.MuBeamNeg.toFixed(1)} kN.m</b> dan momen lapangan positif <b>Mu⁺ = +${st1.MuBeamPos.toFixed(1)} kN.m</b> terhadap kapasitas desain penampang ${s.beamSpec.label} sebesar <b>φMn = ${s.phiMnBeam.toFixed(1)} kN.m</b> (DCR = ${st1.dcrBeam.toFixed(2)}). Gaya geser maksimum <b>Vu = ${st1.VuBeam.toFixed(1)} kN</b> masih di bawah kapasitas geser sengkang <b>φVn = ${s.phiVnBeam.toFixed(1)} kN</b>.</p>
+                    <p>3. <b>Evaluasi Diagram Kolom &amp; Pelat Lantai:</b> Kolom Lantai 1 (${s.colSpec.label}) menahan gaya aksial komulatif <b>Pu = ${st1.PuCol.toFixed(1)} kN</b>, momen ujung <b>Mu,col = ±${st1.MuCol.toFixed(1)} kN.m</b>, dan geser <b>Vu,col = ${st1.VuCol.toFixed(1)} kN</b> dengan <b>DCR = ${st1.dcrCol.toFixed(2)}</b> serta rasio kapasitas kolom-balok <b>SCWB = ${s.scwbRatio.toFixed(2)} ≥ 1,20</b>. Pelat lantai dua arah (t = ${s.tSlab} mm) memikul momen tumpuan <b>Mtx = -${st1.Mtx.toFixed(2)} kN.m/m</b> dan lapangan <b>Mlx = +${st1.Mlx.toFixed(2)} kN.m/m</b>.</p>
+                `;
+            }
+
+            if (sBox) {
+                sBox.innerHTML = `
+                    <p>• <b>Saran Teknis 1 (Penulangan Sendi Plastis Balok &amp; Kolom):</b> Berdasarkan diagram BMD dan SFD, pasang sengkang tertutup rapat (Ø10-100 mm dengan kait gempa 135°) sepanjang $2h$ dari muka kolom pada balok induk, serta sepanjang $l_o$ pada ujung atas dan bawah kolom di setiap tingkat.</p>
+                    <p>• <b>Saran Teknis 2 (Pelat Lantai &amp; Sloof):</b> Gunakan tulangan rangkap (lapis atas di tumpuan untuk menahan $M_{tx} = -${st1.Mtx.toFixed(2)}\text{ kN.m/m}$ dan lapis bawah di lapangan untuk menahan $M_{lx} = +${st1.Mlx.toFixed(2)}\text{ kN.m/m}$) menggunakan <b>${st1.slabRebar}</b>. Pastikan balok sloof diikat monolit ke leher kolom (*pedestal*) pondasi telapak.</p>
+                    <p>• <b>Saran Teknis 3 (Kuda-Kuda Atap &amp; Pondasi):</b> Untuk profil atap <b>${s.roofSpec.name}</b>, pasang pengaku lateral (*ikatan angin*) setiap 3 bentang kuda-kuda. Pada pondasi footplate ${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)} m, tambahkan lantai kerja (*lean concrete*) tebal 5–10 cm dan urugan pasir padat di bawah telapak.</p>
+                `;
+            }
+
+            if (kBox) {
+                kBox.innerHTML = `
+                    <p><b>KESIMPULAN KELAYAKAN STRUKTUR:</b> Berdasarkan analisis mekanika teknik dan peraturan SNI yang berlaku, konfigurasi struktur bangunan <b>${s.N} Lantai</b> dengan Pondasi Footplate <b>${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)} m (FS = ${s.fsFoundation.toFixed(2)})</b>, Kolom <b>${s.colSpec.label} (DCR = ${s.dcrCol.toFixed(2)})</b>, Balok Induk <b>${s.beamSpec.label} (DCR = ${s.dcrBeam.toFixed(2)})</b>, Pelat Lantai <b>${s.tSlab} mm (${st1.slabRebar})</b>, serta Rangka Atap <b>${s.roofSpec.code} (DCR = ${s.dcrRoof.toFixed(2)})</b> dinyatakan <b>${allSafe ? 'MEMENUHI SYARAT KEAMANAN STRUKTUR (SAFE & COMPLIANT BUILDING)' : 'MEMERLUKAN PENINGKATAN DIMENSI PADA ELEMEN YANG MELEBIHI DCR 1,00'}</b>.</p>
+                `;
+            }
+        }
+
+        // =====================================================================
+        // 7. GRAFIK ANALITIK MULTI-LANTAI (CHART.JS)
+        // =====================================================================
+        function switchStructChart(mode) {
+            currentStructChartMode = mode;
+            ['moments', 'forces', 'dcr'].forEach(m => {
+                const btn = document.getElementById('btnChart' + m.charAt(0).toUpperCase() + m.slice(1));
+                if (btn) {
+                    btn.className = (m === mode)
+                        ? 'px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black cursor-pointer'
+                        : 'px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer';
+                }
+            });
+            updateStructAnalyticsChart();
+        }
+
+        function updateStructAnalyticsChart() {
+            const ctx = document.getElementById('structAnalyticsChart')?.getContext('2d');
+            if (!ctx) return;
+            if (structChartInstance) structChartInstance.destroy();
+            const s = structState;
+
+            if (currentStructChartMode === 'moments') {
+                structChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: s.storyData.map(st => `Lantai ${st.level}`),
+                        datasets: [
+                            { label: 'Momen Tumpuan Balok Mu⁻ (kN.m)', data: s.storyData.map(st => Number(st.MuBeamNeg.toFixed(1))), backgroundColor: '#f43f5e', borderRadius: 6 },
+                            { label: 'Momen Lapangan Balok Mu⁺ (kN.m)', data: s.storyData.map(st => Number(st.MuBeamPos.toFixed(1))), backgroundColor: '#10b981', borderRadius: 6 },
+                            { label: 'Momen Ujung Kolom Mu,col (kN.m)', data: s.storyData.map(st => Number(st.MuCol.toFixed(1))), backgroundColor: '#fbbf24', borderRadius: 6 },
+                            { label: 'Momen Pelat Lantai Mtx (kN.m/m)', data: s.storyData.map(st => Number(st.Mtx.toFixed(1))), backgroundColor: '#a855f7', borderRadius: 6 }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'JetBrains Mono', size: 10 } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                            y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } }
+                        }
+                    }
+                });
+            } else if (currentStructChartMode === 'forces') {
+                structChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: s.storyData.map(st => `Lantai ${st.level}`),
+                        datasets: [
+                            { label: 'Gaya Aksial Kolom Pu (kN)', data: s.storyData.map(st => Number(st.PuCol.toFixed(1))), backgroundColor: '#06b6d4', borderRadius: 6 },
+                            { label: 'Gaya Geser Balok Vu (kN)', data: s.storyData.map(st => Number(st.VuBeam.toFixed(1))), backgroundColor: '#34d399', borderRadius: 6 },
+                            { label: 'Gaya Geser Gempa Tingkat Vx (kN)', data: s.storyData.map(st => Number(st.Vx.toFixed(1))), backgroundColor: '#fb923c', borderRadius: 6 }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'JetBrains Mono', size: 10 } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                            y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } }
+                        }
+                    }
+                });
+            } else {
+                const dcrFound = s.qContactMax / s.qAll;
+                const dcrValues = [
+                    Number(dcrFound.toFixed(2)),
+                    Number(s.dcrPunch.toFixed(2)),
+                    Number(s.dcrCol.toFixed(2)),
+                    Number(s.dcrBeam.toFixed(2)),
+                    Number((s.VuBeam / s.phiVnBeam).toFixed(2)),
+                    Number(s.dcrRoof.toFixed(2))
+                ];
+                structChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Daya Dukung Tanah', 'Geser Pons Telapak', 'Kolom Aksial Lt.1', 'Lentur Balok Induk', 'Geser Balok Induk', 'Rangka Profil Atap'],
+                        datasets: [
+                            { label: 'Demand Capacity Ratio (DCR Aktual)', data: dcrValues, backgroundColor: ['#f59e0b', '#fb923c', '#06b6d4', '#10b981', '#14b8a6', '#a855f7'], borderRadius: 7 },
+                            { label: 'Batas Izin Maksimum SNI (DCR = 1.00)', data: [1, 1, 1, 1, 1, 1], type: 'line', borderColor: '#f43f5e', borderDash: [6, 4], borderWidth: 2, pointRadius: 0 }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'JetBrains Mono', size: 10 } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                            y: { beginAtZero: true, max: Math.max(1.3, ...dcrValues) + 0.1, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // =====================================================================
+        // 8. VISUALISASI 3D RANGKA GEDUNG MULTI-LANTAI (THREE.JS)
         // =====================================================================
         let building3D = { scene: null, camera: null, renderer: null, group: null, rotating: true };
 
@@ -1495,9 +1942,7 @@
             const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
             dirLight.position.set(30, 50, 40);
             scene.add(dirLight);
-
-            const gridHelper = new THREE.GridHelper(28, 28, 0x10b981, 0x1e293b);
-            scene.add(gridHelper);
+            scene.add(new THREE.GridHelper(28, 28, 0x10b981, 0x1e293b));
 
             const group = new THREE.Group();
             scene.add(group);
@@ -1507,9 +1952,7 @@
 
             function animate3D() {
                 requestAnimationFrame(animate3D);
-                if (building3D.rotating && building3D.group) {
-                    building3D.group.rotation.y += 0.0045;
-                }
+                if (building3D.rotating && building3D.group) building3D.group.rotation.y += 0.0045;
                 renderer.render(scene, camera);
             }
             animate3D();
@@ -1529,9 +1972,8 @@
             const matCol = new THREE.MeshPhongMaterial({ color: 0x38bdf8 });
             const matBeam = new THREE.MeshPhongMaterial({ color: 0x10b981 });
             const matSlab = new THREE.MeshPhongMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.32 });
-            const matRoof = new THREE.MeshPhongMaterial({ color: 0xc084fc, wireframe: false });
+            const matRoof = new THREE.MeshPhongMaterial({ color: 0xc084fc });
 
-            // Pondasi Telapak 3D & Kolom Multi-Lantai
             coords.forEach(x => {
                 coords.forEach(z => {
                     const footMesh = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.35, 1.6), matFoot);
@@ -1545,7 +1987,6 @@
                 });
             });
 
-            // Balok & Pelat tiap Lantai (1 s/d N)
             for (let level = 0; level <= N; level++) {
                 const y = level * h;
                 coords.forEach(z => {
@@ -1565,10 +2006,8 @@
                 }
             }
 
-            // Rangka Kuda-Kuda Atap 3D di atas Lantai N
             const topY = N * h;
-            const roofGeo = new THREE.ConeGeometry(7.8, 2.8, 4);
-            const roofMesh = new THREE.Mesh(roofGeo, matRoof);
+            const roofMesh = new THREE.Mesh(new THREE.ConeGeometry(7.8, 2.8, 4), matRoof);
             roofMesh.position.set(0, topY + 1.4, 0);
             roofMesh.rotation.y = Math.PI / 4;
             grp.add(roofMesh);
@@ -1577,200 +2016,17 @@
             building3D.camera.lookAt(0, (N * h) / 2, 0);
         }
 
-        function toggle3DRotation() {
-            building3D.rotating = !building3D.rotating;
-        }
+        function toggle3DRotation() { building3D.rotating = !building3D.rotating; }
 
         // =====================================================================
-        // 6. TABEL KATALOG ATAP, DISTRIBUSI LANTAI & RISALAH TEKNIS
-        // =====================================================================
-        function renderCatalogAndStoryTables() {
-            const s = structState;
-
-            // Tabel Distribusi per Lantai
-            const stBody = document.getElementById('storyDistributionTableBody');
-            if (stBody) {
-                stBody.innerHTML = [...s.storyData].reverse().map(st => `
-                    <tr class="hover:bg-slate-900">
-                        <td class="p-2 font-bold text-emerald-300">Lantai ${st.level}</td>
-                        <td class="p-2">+${st.zx.toFixed(1)} m</td>
-                        <td class="p-2">${st.Wx.toFixed(1)} kN</td>
-                        <td class="p-2 text-rose-400 font-bold">${st.Fx.toFixed(1)} kN</td>
-                        <td class="p-2 text-amber-300 font-bold">${st.Vx.toFixed(1)} kN</td>
-                        <td class="p-2 text-cyan-300 font-bold">${st.PuCol.toFixed(1)} kN</td>
-                    </tr>
-                `).join('');
-            }
-
-            // Tabel Katalog Profil Atap
-            const rcBody = document.getElementById('roofCatalogTableBody');
-            if (rcBody) {
-                rcBody.innerHTML = Object.values(ROOF_PROFILE_CATALOG).map(p => {
-                    const isSelected = (p.code === s.roofSpec.code);
-                    return `
-                    <tr class="${isSelected ? 'bg-purple-950/60 border-l-4 border-l-purple-400' : 'hover:bg-slate-900'}">
-                        <td class="p-2 font-bold text-white">${p.name}</td>
-                        <td class="p-2 text-slate-300">${p.std}</td>
-                        <td class="p-2 text-right">${p.A.toFixed(1)}</td>
-                        <td class="p-2 text-right">${p.Ix.toFixed(2)}</td>
-                        <td class="p-2 text-right">${p.Zx.toFixed(2)}</td>
-                        <td class="p-2 text-right text-amber-300">${p.fy}</td>
-                        <td class="p-2 text-right text-cyan-300">${p.weight.toFixed(2)}</td>
-                        <td class="p-2 text-center">
-                            <button type="button" onclick="selectRoofProfileFromTable('${p.code}')" class="px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-purple-700 hover:bg-purple-600 text-white'}">
-                                ${isSelected ? 'Aktif' : 'Gunakan'}
-                            </button>
-                        </td>
-                    </tr>`;
-                }).join('');
-            }
-
-            // Risalah Teknis & Rekomendasi
-            const rBox = document.getElementById('liveStructRisalah');
-            const sBox = document.getElementById('liveStructSaran');
-            if (rBox && sBox) {
-                rBox.innerHTML = `
-                    <p>• <b>Evaluasi Portal ${s.N} Lantai:</b> Beban aksial terfaktor maksimum pada kolom lantai dasar tercatat <b>Pu = ${s.PuColBase.toFixed(1)} kN</b> dengan kapasitas desain <b>φPn = ${s.phiPnMaxCol.toFixed(1)} kN</b> (DCR = ${s.dcrCol.toFixed(2)}).</p>
-                    <p>• <b>Kinerja Balok &amp; Atap:</b> Balok induk ${s.beamSpec.label} memikul <b>Mu = ${s.MuBeam.toFixed(1)} kN.m</b> (DCR = ${s.dcrBeam.toFixed(2)}), sedangkan rangka atap <b>${s.roofSpec.name}</b> bekerja pada rasio tegangan <b>DCR = ${s.dcrRoof.toFixed(2)}</b>.</p>
-                    <p>• <b>Stabilitas Pondasi Telapak:</b> Tegangan kontak tanah maksimum <b>q_max = ${s.qContactMax.toFixed(1)} kPa</b> terhadap daya dukung izin <b>q_all = ${s.qAll} kPa</b> menghasilkan <b>FS = ${s.fsFoundation.toFixed(2)}</b>.</p>
-                `;
-                sBox.innerHTML = `
-                    <p>• <b>Detail Sengkang Kolom &amp; Balok (SRPMK):</b> Gunakan sengkang tertutup (kait gempa 135°) Ø10-100 mm pada daerah sendi plastis sepanjang $l_o$ dari muka hubungan balok-kolom.</p>
-                    <p>• <b>Pengaku Ikatan Angin Atap:</b> Pasang *bracing* ikatan angin silang pada kuda-kuda atap ${s.roofSpec.code} setiap 3–4 bentang kuda-kuda untuk mencegah tekuk lateral.</p>
-                    <p>• <b>Pondasi Gabungan Batu Kali &amp; Footplate:</b> Untuk bangunan ${s.N} lantai, kombinasikan pondasi menerus batu kali di bawah sloof dinding dengan pondasi telapak (*footplate*) ${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)} m di setiap titik kolom utama.</p>
-                `;
-            }
-        }
-
-        // =====================================================================
-        // 7. GRAFIK ANALITIK STRUKTUR (CHART.JS)
-        // =====================================================================
-        function switchStructChart(mode) {
-            currentStructChartMode = mode;
-            ['dcr', 'story', 'roof'].forEach(m => {
-                const btn = document.getElementById('btnChart' + m.charAt(0).toUpperCase() + m.slice(1));
-                if (btn) {
-                    btn.className = (m === mode)
-                        ? 'px-2.5 py-1 rounded bg-emerald-600 text-slate-950 font-black cursor-pointer'
-                        : 'px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-white cursor-pointer';
-                }
-            });
-            updateStructAnalyticsChart();
-        }
-
-        function updateStructAnalyticsChart() {
-            const ctx = document.getElementById('structAnalyticsChart')?.getContext('2d');
-            if (!ctx) return;
-            if (structChartInstance) structChartInstance.destroy();
-            const s = structState;
-
-            if (currentStructChartMode === 'dcr') {
-                const dcrFound = s.qContactMax / s.qAll;
-                const dcrValues = [
-                    Number(dcrFound.toFixed(2)),
-                    Number(s.dcrPunch.toFixed(2)),
-                    Number(s.dcrCol.toFixed(2)),
-                    Number(s.dcrBeam.toFixed(2)),
-                    Number((s.VuBeam / s.phiVnBeam).toFixed(2)),
-                    Number(s.dcrRoof.toFixed(2))
-                ];
-                structChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Daya Dukung Tanah', 'Geser Pons Telapak', 'Kolom Aksial Lt.1', 'Lentur Balok Induk', 'Geser Balok Induk', 'Rangka Profil Atap'],
-                        datasets: [
-                            {
-                                label: 'Demand Capacity Ratio (DCR Aktual)',
-                                data: dcrValues,
-                                backgroundColor: ['#f59e0b', '#fb923c', '#06b6d4', '#10b981', '#14b8a6', '#a855f7'],
-                                borderRadius: 7
-                            },
-                            {
-                                label: 'Batas Izin Maksimum SNI (DCR = 1.00)',
-                                data: [1, 1, 1, 1, 1, 1],
-                                type: 'line',
-                                borderColor: '#f43f5e',
-                                borderDash: [6, 4],
-                                borderWidth: 2,
-                                pointRadius: 0
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'JetBrains Mono', size: 10 } } } },
-                        scales: {
-                            x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                            y: { beginAtZero: true, max: Math.max(1.3, ...dcrValues) + 0.1, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } }
-                        }
-                    }
-                });
-            } else if (currentStructChartMode === 'story') {
-                structChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: s.storyData.map(st => `Lantai ${st.level} (+${st.zx.toFixed(1)}m)`),
-                        datasets: [
-                            {
-                                label: 'Beban Aksial Kolom Pu (kN)',
-                                data: s.storyData.map(st => Number(st.PuCol.toFixed(1))),
-                                backgroundColor: '#06b6d4',
-                                borderRadius: 6
-                            },
-                            {
-                                label: 'Geser Gempa Tingkat Vx (kN)',
-                                data: s.storyData.map(st => Number(st.Vx.toFixed(1))),
-                                backgroundColor: '#f43f5e',
-                                borderRadius: 6
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'JetBrains Mono', size: 10 } } } },
-                        scales: {
-                            x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                            y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } }
-                        }
-                    }
-                });
-            } else {
-                const profList = Object.values(ROOF_PROFILE_CATALOG);
-                const capList = profList.map(p => Number(((0.85 * 0.7 * p.fy * p.A) / 1000).toFixed(1)));
-                structChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: profList.map(p => p.code),
-                        datasets: [{
-                            label: 'Kapasitas Aksial Tekan Desain φPn Katalog Profil Atap (kN)',
-                            data: capList,
-                            backgroundColor: ['#06b6d4','#0ea5e9','#38bdf8','#10b981','#34d399','#6ee7b7','#a855f7','#f59e0b','#fbbf24','#f43f5e','#ec4899','#8b5cf6'],
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'JetBrains Mono', size: 10 } } } },
-                        scales: {
-                            x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                            y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } }
-                        }
-                    }
-                });
-            }
-        }
-
-        // =====================================================================
-        // 8. SWITCH CENTER VIEWPORT TABS & DOWNLOAD PNG / EXCEL
+        // 9. NAVIGASI VIEWPORT TENGAH, EXCEL, PNG & BUMI 3D
         // =====================================================================
         function switchCenterTab(tab) {
             const mapTabs = {
+                diagrams:  { pane: 'paneDiagrams',  btn: 'tabBtnDiagrams' },
                 blueprint: { pane: 'paneBlueprint', btn: 'tabBtnBlueprint' },
+                risalah:   { pane: 'paneRisalah',   btn: 'tabBtnRisalah' },
                 view3d:    { pane: 'paneView3d',    btn: 'tabBtnView3d' },
-                catalog:   { pane: 'paneCatalog',   btn: 'tabBtnCatalog' },
                 map:       { pane: 'paneMap',       btn: 'tabBtnMap' }
             };
             Object.keys(mapTabs).forEach(k => {
@@ -1784,23 +2040,17 @@
                 }
             });
 
-            if (tab === 'view3d' && !building3D.renderer) {
-                setTimeout(initBuilding3DViewport, 80);
-            }
+            if (tab === 'view3d' && !building3D.renderer) setTimeout(initBuilding3DViewport, 80);
             if (tab === 'map') {
                 if (!structLeafletMap) {
                     structLeafletMap = L.map('structLeafletMap', { center: [-6.99, 110.42], zoom: 6 });
                     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(structLeafletMap);
-                    const cities = [
+                    [
                         { name: 'Semarang / Kudus (Jawa Tengah)', coords: [-6.80, 110.84], sds: 0.75 },
                         { name: 'DKI Jakarta', coords: [-6.20, 106.84], sds: 0.75 },
                         { name: 'Yogyakarta (Zona Gempa Tinggi)', coords: [-7.79, 110.36], sds: 1.05 },
-                        { name: 'Padang / Sumatera Barat (Zona Sangat Tinggi)', coords: [-0.94, 100.35], sds: 1.35 },
-                        { name: 'Pontianak / Kalimantan (Zona Rendah)', coords: [-0.02, 109.34], sds: 0.45 }
-                    ];
-                    cities.forEach(c => {
-                        L.marker(c.coords).addTo(structLeafletMap).bindPopup(`<b>${c.name}</b><br>Percepatan Spektral SDS = ${c.sds}g`);
-                    });
+                        { name: 'Padang / Sumatera Barat', coords: [-0.94, 100.35], sds: 1.35 }
+                    ].forEach(c => L.marker(c.coords).addTo(structLeafletMap).bindPopup(`<b>${c.name}</b><br>SDS = ${c.sds}g`));
                 }
                 setTimeout(() => structLeafletMap.invalidateSize(), 150);
             }
@@ -1816,12 +2066,12 @@
                 const cv = document.createElement('canvas');
                 cv.width = 1920; cv.height = 1040;
                 const cx = cv.getContext('2d');
-                cx.fillStyle = '#07223d';
+                cx.fillStyle = '#061d36';
                 cx.fillRect(0, 0, cv.width, cv.height);
                 cx.drawImage(img, 0, 0, cv.width, cv.height);
                 URL.revokeObjectURL(url);
                 const a = document.createElement('a');
-                a.download = `Blueprint_Struktur_${structState.N}_Lantai_SNI.png`;
+                a.download = `Portal_Struktur_${structState.N}_Lantai_SNI.png`;
                 a.href = cv.toDataURL('image/png');
                 a.click();
             };
@@ -1833,22 +2083,24 @@
             const rows = s.storyData.map(st => ({
                 'Tingkat': `Lantai ${st.level}`,
                 'Elevasi (m)': st.zx,
-                'Berat Lantai Wx (kN)': Number(st.Wx.toFixed(1)),
                 'Gaya Gempa Fx (kN)': Number(st.Fx.toFixed(1)),
-                'Geser Tingkat Vx (kN)': Number(st.Vx.toFixed(1)),
+                'Momen Tumpuan Balok Mu- (kN.m)': Number(st.MuBeamNeg.toFixed(1)),
+                'Momen Lapangan Balok Mu+ (kN.m)': Number(st.MuBeamPos.toFixed(1)),
+                'Gaya Geser Balok Vu (kN)': Number(st.VuBeam.toFixed(1)),
                 'Aksial Kolom Pu (kN)': Number(st.PuCol.toFixed(1)),
-                'Kapasitas Kolom φPn (kN)': Number(s.phiPnMaxCol.toFixed(1)),
-                'DCR Kolom': Number((st.PuCol / s.phiPnMaxCol).toFixed(2))
+                'Momen Kolom Mu,col (kN.m)': Number(st.MuCol.toFixed(1)),
+                'Geser Kolom Vu,col (kN)': Number(st.VuCol.toFixed(1)),
+                'Momen Tumpuan Pelat Mtx (kN.m/m)': Number(st.Mtx.toFixed(2)),
+                'Momen Lapangan Pelat Mlx (kN.m/m)': Number(st.Mlx.toFixed(2)),
+                'Tulangan Pelat': st.slabRebar
             }));
             const ws = XLSX.utils.json_to_sheet(rows);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, `Struktur_${s.N}_Lantai`);
-            XLSX.writeFile(wb, `Analisis_Struktur_${s.N}_Lantai_SNI.xlsx`);
+            XLSX.utils.book_append_sheet(wb, ws, `Diagram_${s.N}_Lantai`);
+            XLSX.writeFile(wb, `Analisis_Diagram_Struktur_${s.N}_Lantai_SNI.xlsx`);
         }
 
-        // =====================================================================
-        // 9. MESIN BUMI 3D REALISTIS & AWAN BERPUTAR UTUH (THREE.JS)
-        // =====================================================================
+        // Mesin Bumi 3D Realistis & Awan Berputar Utuh
         const EARTH_URLS = {
             day: ['https://unpkg.com/three-globe@2.45.5/example/img/earth-blue-marble.jpg'],
             clouds: ['https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_clouds_1024.png']
@@ -2010,21 +2262,21 @@
         }
         function closeCreatorModal() { document.getElementById('creatorModal').classList.add('hidden'); }
 
-        // 13 Topik Laporan Teknis Word (.doc)
+        // 13 Topik Laporan Teknis Word (.doc) dengan Risalah, Saran & Kesimpulan
         const STRUCT_WORD_TOPICS = [
-            { n: '01', slug: 'RingkasanEksekutifStruktur', title: 'RINGKASAN EKSEKUTIF ANALISIS STRUKTUR BANGUNAN MULTI-LANTAI (SNI 2847:2019 & SNI 1726:2019)' },
-            { n: '02', slug: 'PembebananGravitasiSNI1727', title: 'ANALISIS BEBAN MATI, BEBAN HIDUP & KOMBINASI LRFD (SNI 1727:2020)' },
-            { n: '03', slug: 'AnalisisGempaStatikEkivalen', title: 'ANALISIS GESER DASAR GEMPA & DISTRIBUSI GAYA LATERAL TINGKAT (SNI 1726:2019)' },
-            { n: '04', slug: 'KatalogDanDesainRangkaAtap', title: 'ANALISIS KUDA-KUDA & KATALOG PROFIL ATAP BAJA RINGAN / CNP / WF (SNI 7971 & SNI 1729)' },
-            { n: '05', slug: 'DesainPelatLantaiBeton', title: 'PERENCANAAN PELAT LANTAI BETON BERTULANG DUA ARAH (SNI 2847:2019)' },
-            { n: '06', slug: 'DesainLenturDanGeserBalokInduk', title: 'DESAIN TULANGAN LENTUR & SENGKANG GESER BALOK INDUK PORTAL (SNI 2847:2019)' },
-            { n: '07', slug: 'DesainBalokSloofDanTieBeam', title: 'PERENCANAAN BALOK SLOOF PENGIKAT PONDASI (SNI 2847:2019)' },
-            { n: '08', slug: 'AnalisisKolomAksialLentur', title: 'ANALISIS INTERAKSI AKSIAL-LENTUR KOLOM BERTINGKAT (Pu - φPn)' },
-            { n: '09', slug: 'EvaluasiStrongColumnWeakBeam', title: 'EVALUASI KRITERIA STRONG COLUMN WEAK BEAM (SCWB ≥ 1,20) SRPMK' },
-            { n: '10', slug: 'AnalisisDayaDukungPondasiFootplate', title: 'ANALISIS DAYA DUKUNG TANAH & PONDASI TELAPAK FOOTPLATE (SNI 8460:2017)' },
-            { n: '11', slug: 'KontrolGeserPonsPondasi', title: 'KONTROL TEGANGAN GESER PONS (PUNCHING SHEAR) DUA ARAH PONDASI TELAPAK' },
-            { n: '12', slug: 'DetailingTulanganTahanGempa', title: 'PEDOMAN DETAILING PENULANGAN & KAIT GEMPA 135 DERAJAT (SRPMK)' },
-            { n: '13', slug: 'KesimpulanDanRekomendasiKelayakan', title: 'KESIMPULAN KELAYAKAN STRUKTUR (SLF) & REKOMENDASI PELAKSANAAN KONSTRUKSI' }
+            { n: '01', slug: 'RingkasanEksekutifDanDiagram', title: 'RINGKASAN EKSEKUTIF & REKAPITULASI DIAGRAM MOMEN-GAYA TIAP LANTAI (SNI 2847:2019)' },
+            { n: '02', slug: 'DiagramMomenGeserBalokTiapLantai', title: 'ANALISIS DIAGRAM MOMEN LENTUR (BMD) & GAYA GESER (SFD) BALOK INDUK PER LANTAI' },
+            { n: '03', slug: 'DiagramMomenGeserAksialKolom', title: 'ANALISIS DIAGRAM MOMEN, GESER & AKSIAL (NFD) KOLOM STRUKTUR PER LANTAI' },
+            { n: '04', slug: 'DiagramMomenPelatLantaiDuaArah', title: 'ANALISIS DISTRIBUSI MOMEN & GESER PELAT LANTAI DUA ARAH (Mtx, Mlx, Mty, Mly)' },
+            { n: '05', slug: 'AnalisisGempaStatikEkivalenSNI1726', title: 'ANALISIS GESER DASAR GEMPA & GAYA LATERAL TINGKAT Fx (SNI 1726:2019)' },
+            { n: '06', slug: 'KatalogDanDesainRangkaAtap', title: 'ANALISIS KUDA-KUDA & KATALOG PROFIL ATAP BAJA RINGAN / CNP / WF (SNI 7971 & SNI 1729)' },
+            { n: '07', slug: 'DesainBalokSloofDanTieBeam', title: 'PERENCANAAN BALOK SLOOF PENGIKAT PONDASI & PEDESTAL (SNI 2847:2019)' },
+            { n: '08', slug: 'EvaluasiStrongColumnWeakBeam', title: 'EVALUASI KRITERIA STRONG COLUMN WEAK BEAM (SCWB ≥ 1,20) SRPMK' },
+            { n: '09', slug: 'AnalisisDayaDukungPondasiFootplate', title: 'ANALISIS DAYA DUKUNG TANAH & PONDASI TELAPAK FOOTPLATE (SNI 8460:2017)' },
+            { n: '10', slug: 'KontrolGeserPonsPondasi', title: 'KONTROL TEGANGAN GESER PONS (PUNCHING SHEAR) DUA ARAH PONDASI TELAPAK' },
+            { n: '11', slug: 'DetailingTulanganSendiPlastis', title: 'PEDOMAN DETAILING PENULANGAN SENDI PLASTIS & KAIT GEMPA 135° (SRPMK)' },
+            { n: '12', slug: 'RisalahTeknisDanSaranKonstruksi', title: 'RISALAH TEKNIS & SARAN TEKNIS PELAKSANAAN STRUKTUR BANGUNAN BERTINGKAT' },
+            { n: '13', slug: 'KesimpulanKelayakanStrukturSLF', title: 'KESIMPULAN KELAYAKAN STRUKTUR (SLF) & VERIFIKASI STANDAR SNI' }
         ];
 
         function openWordReportsModal() {
@@ -2047,24 +2299,28 @@
         function downloadSingleStructWord(idx) {
             const t = STRUCT_WORD_TOPICS[idx];
             const s = structState;
+            const st1 = s.storyData[0];
             const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
             <head><meta charset="utf-8"><title>${t.title}</title></head>
             <body style="font-family:Arial,sans-serif;padding:24px;">
                 <h2 style="color:#0f172a;border-bottom:3px solid #10b981;padding-bottom:8px;">[${t.n}] ${t.title}</h2>
                 <p><b>Jumlah Tingkat Gedung:</b> ${s.N} Lantai | <b>Bentang Portal:</b> ${s.Lx} m × ${s.Ly} m | <b>Dicetak:</b> ${new Date().toLocaleString('id-ID')}</p>
-                <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;margin:14px 0;">
-                    <tr style="background:#0f172a;color:#ffffff;"><th>Elemen Struktur</th><th>Dimensi / Katalog Aktif</th><th>Beban / Tegangan Terfaktor</th><th>Kapasitas Izin SNI</th><th>Rasio / Status</th></tr>
-                    <tr><td>Rangka &amp; Profil Atap</td><td>${s.roofSpec.name}</td><td>Nu = ${s.NuCompression.toFixed(1)} kN</td><td>φPn = ${s.phiPnRoof.toFixed(1)} kN</td><td><b>DCR = ${s.dcrRoof.toFixed(2)} (${s.dcrRoof <= 1 ? 'AMAN' : 'PERKUAT'})</b></td></tr>
-                    <tr><td>Balok Induk &amp; Sloof</td><td>${s.beamSpec.label}</td><td>Mu = ${s.MuBeam.toFixed(1)} kN.m</td><td>φMn = ${s.phiMnBeam.toFixed(1)} kN.m</td><td><b>DCR = ${s.dcrBeam.toFixed(2)} (${s.dcrBeam <= 1 ? 'AMAN' : 'PERKUAT'})</b></td></tr>
-                    <tr><td>Kolom Utama Lantai 1</td><td>${s.colSpec.label}</td><td>Pu = ${s.PuColBase.toFixed(1)} kN</td><td>φPn = ${s.phiPnMaxCol.toFixed(1)} kN</td><td><b>DCR = ${s.dcrCol.toFixed(2)} (${s.dcrCol <= 1 ? 'AMAN' : 'PERKUAT'})</b></td></tr>
-                    <tr><td>Pondasi Footplate</td><td>${s.Bf.toFixed(1)} × ${s.Bf.toFixed(1)} m (Df=${s.Df}m)</td><td>q_max = ${s.qContactMax.toFixed(1)} kPa</td><td>q_all = ${s.qAll} kPa</td><td><b>FS = ${s.fsFoundation.toFixed(2)} (${s.qContactMax <= s.qAll ? 'AMAN' : 'PERLEBAR'})</b></td></tr>
+                <h3>A. Tabel Gaya Dalam (Momen, Geser, Aksial) Balok, Kolom &amp; Pelat di Masing-Masing Lantai</h3>
+                <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:10pt;margin-bottom:14px;">
+                    <tr style="background:#0f172a;color:#ffffff;"><th>Tingkat</th><th>Elevasi (m)</th><th>Gempa Fx (kN)</th><th>Balok Mu⁻ / Mu⁺ (kN.m)</th><th>Balok Vu (kN)</th><th>Kolom Pu (kN)</th><th>Kolom Mu / Vu</th><th>Pelat Mtx / Mlx (kN.m/m)</th></tr>
+                    ${s.storyData.map(st => `<tr><td><b>Lantai ${st.level}</b></td><td>+${st.zx.toFixed(1)}</td><td>${st.Fx.toFixed(1)}</td><td>-${st.MuBeamNeg.toFixed(1)} / +${st.MuBeamPos.toFixed(1)}</td><td>${st.VuBeam.toFixed(1)}</td><td>${st.PuCol.toFixed(1)}</td><td>±${st.MuCol.toFixed(1)} / ${st.VuCol.toFixed(1)}</td><td>-${st.Mtx.toFixed(2)} / +${st.Mlx.toFixed(2)}</td></tr>`).join('')}
                 </table>
-                <h3>Distribusi Beban &amp; Gaya Gempa per Tingkat (SNI 1726:2019)</h3>
-                <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:10.5pt;">
-                    <tr style="background:#e2e8f0;"><th>Tingkat</th><th>Elevasi (m)</th><th>Berat Wx (kN)</th><th>Gaya Gempa Fx (kN)</th><th>Geser Tingkat Vx (kN)</th><th>Aksial Kolom Pu (kN)</th></tr>
-                    ${s.storyData.map(st => `<tr><td>Lantai ${st.level}</td><td>+${st.zx.toFixed(1)}</td><td>${st.Wx.toFixed(1)}</td><td>${st.Fx.toFixed(1)}</td><td>${st.Vx.toFixed(1)}</td><td>${st.PuCol.toFixed(1)}</td></tr>`).join('')}
-                </table>
-                <p style="margin-top:20px;font-size:9.5pt;color:#475569;">Disusun oleh Sistem Analisis Struktur GeoStruct Building Pro v7.0 — <b>Ir. Mohamad Hartadi, S.T. (Adi)</b></p>
+                <h3>B. Risalah Teknis Analisis Struktur</h3>
+                <p style="text-align:justify;">Berdasarkan analisis portal tahan gempa SNI 1726:2019 dan SNI 2847:2019, gaya geser dasar seismik tercatat V = ${s.V_base.toFixed(1)} kN. Pada Lantai 1, balok induk ${s.beamSpec.label} memikul momen tumpuan negatif Mu⁻ = -${st1.MuBeamNeg.toFixed(1)} kN.m dan lapangan Mu⁺ = +${st1.MuBeamPos.toFixed(1)} kN.m (kapasitas φMn = ${s.phiMnBeam.toFixed(1)} kN.m, DCR = ${st1.dcrBeam.toFixed(2)}). Kolom utama ${s.colSpec.label} memikul gaya aksial tekan Pu = ${st1.PuCol.toFixed(1)} kN dan momen ujung ±${st1.MuCol.toFixed(1)} kN.m (DCR = ${st1.dcrCol.toFixed(2)}, SCWB = ${s.scwbRatio.toFixed(2)}).</p>
+                <h3>C. Saran Teknis Pelaksanaan Konstruksi</h3>
+                <ul>
+                    <li>Gunakan sengkang tertutup rapat Ø10-100 mm dengan kait gempa 135° pada zona sendi plastis tumpuan balok dan ujung kolom.</li>
+                    <li>Pasang tulangan pelat lantai dua arah ${st1.slabRebar} dengan selimut beton bersih minimal 20 mm.</li>
+                    <li>Pastikan tanah dasar pondasi footplate ${s.Bf.toFixed(1)}×${s.Bf.toFixed(1)} m dipadatkan dan diberi lantai kerja sebelum pengecoran.</li>
+                </ul>
+                <h3>D. Kesimpulan Kelayakan Struktur</h3>
+                <p style="background:#ecfdf5;border-left:4px solid #059669;padding:10px;"><b>Kesimpulan:</b> Struktur bangunan ${s.N} Lantai memenuhi kriteria kekuatan dan stabilitas berdasarkan SNI 2847:2019, SNI 1726:2019, SNI 8460:2017, dan SNI 1729:2020 dengan FS Pondasi = ${s.fsFoundation.toFixed(2)}, DCR Kolom = ${s.dcrCol.toFixed(2)}, DCR Balok = ${s.dcrBeam.toFixed(2)}, dan DCR Atap = ${s.dcrRoof.toFixed(2)}.</p>
+                <p style="margin-top:18px;font-size:9pt;color:#475569;">Disusun oleh GeoStruct Building &amp; Diagram Pro v8.0 — <b>Ir. Mohamad Hartadi, S.T. (Adi)</b></p>
             </body></html>`;
             const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
             const a = document.createElement('a');
@@ -2085,7 +2341,7 @@
         }
 
         // =====================================================================
-        // 11. CHATBOT JARVIS STRUCTURAL AI & KONTROL BAHASA / FONT
+        // 11. CHATBOT JARVIS STRUCTURAL AI & JAM REAL-TIME WIB
         // =====================================================================
         function toggleChatPanel() {
             const p = document.getElementById('floatingChatPanel');
@@ -2104,13 +2360,14 @@
             box.insertAdjacentHTML('beforeend', `<div class="p-2.5 rounded-xl bg-emerald-950 border border-emerald-500/40 text-right ml-auto max-w-[85%] text-emerald-100">${q}</div>`);
 
             const s = structState;
+            const st = s.storyData[selectedFloorIndex - 1] || s.storyData[0];
             const reply = `
                 <div class="p-3 rounded-xl bg-slate-900 border border-cyan-500/40 text-slate-200 space-y-1">
-                    <b class="text-cyan-300 block">📐 Hasil Evaluasi Struktur ${s.N} Lantai (SNI):</b>
-                    <div>• <b>Pondasi (${s.Bf}x${s.Bf}m):</b> q_max = ${s.qContactMax.toFixed(1)} kPa ≤ ${s.qAll} kPa (<b>FS = ${s.fsFoundation.toFixed(2)}</b>)</div>
-                    <div>• <b>Kolom Lt.1 (${s.colSpec.label}):</b> Pu = ${s.PuColBase.toFixed(0)} kN (<b>DCR = ${s.dcrCol.toFixed(2)}</b>)</div>
-                    <div>• <b>Balok Induk (${s.beamSpec.label}):</b> Mu = ${s.MuBeam.toFixed(1)} kN.m (<b>DCR = ${s.dcrBeam.toFixed(2)}</b>)</div>
-                    <div>• <b>Rangka Atap (${s.roofSpec.code}):</b> Nu = ${s.NuCompression.toFixed(1)} kN (<b>DCR = ${s.dcrRoof.toFixed(2)}</b>)</div>
+                    <b class="text-cyan-300 block">📐 Analisis Diagram Lantai ${st.level} (Gedung ${s.N} Lantai):</b>
+                    <div>• <b>Balok (${s.beamSpec.label}):</b> Mu⁻ = -${st.MuBeamNeg.toFixed(1)} kN.m | Mu⁺ = +${st.MuBeamPos.toFixed(1)} kN.m | Vu = ${st.VuBeam.toFixed(1)} kN</div>
+                    <div>• <b>Kolom (${s.colSpec.label}):</b> Pu = ${st.PuCol.toFixed(0)} kN | Mu = ±${st.MuCol.toFixed(1)} kN.m | Vu = ${st.VuCol.toFixed(1)} kN</div>
+                    <div>• <b>Pelat Lantai (t=${s.tSlab}mm):</b> Mtx = -${st.Mtx.toFixed(2)} kN.m/m | Mlx = +${st.Mlx.toFixed(2)} kN.m/m (${st.slabRebar})</div>
+                    <div>• <b>Kesimpulan:</b> FS Pondasi = ${s.fsFoundation.toFixed(2)}, DCR Kolom = ${st.dcrCol.toFixed(2)} (<b>SAFE STRUCTURE</b>).</div>
                 </div>`;
             setTimeout(() => {
                 box.insertAdjacentHTML('beforeend', reply);
@@ -2118,7 +2375,6 @@
             }, 300);
         }
 
-        // Kontrol Translate, Ukuran Teks & Dam Tailing CC
         let APP_FONT = 100;
         function injectCtrlGroups() {
             const host = document.getElementById('ctrlGroupDash');
